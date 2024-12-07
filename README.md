@@ -16,14 +16,14 @@ touch .env
 ```
 ### - What should be in the file?
 ```
-DEV_SECRET_KEY = 'YOUR_SECRET_KEY'
-LOCAL_SECRET_KEY = 'YOUR_SECRET_KEY'
-PROD_SECRET_KEY = 'YOUR_SECRET_KEY'
+DEV_SECRET_KEY = 'YOUR_DEV_SECRET_KEY'
+LOCAL_SECRET_KEY = 'YOUR_LOCAL_SECRET_KEY'
+PROD_SECRET_KEY = 'YOUR_PROD_SECRET_KEY'
 ```
 ## 4. makemigrations & migrate
 ```
-python manage.py makemigrations
-python manage.py migrate
+python manage.py makemigrations --settings=config.settings.the_execution_environment_you_want
+python manage.py migrate --settings=config.settings.the_execution_environment_you_want
 ```
 ## 5. runserver
 ### Run as a production environment for real services
