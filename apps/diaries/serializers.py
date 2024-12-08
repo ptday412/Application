@@ -47,26 +47,30 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         slug_field='name',
         queryset=Hashtag.objects.all()
     )
-    images = serializers.ListField(
-        child=serializers.ImageField(),
-        write_only=True,
-        required=False,
-    )
+    images = DiaryImageWriteSerializer(many=True)
 
     class Meta:
         model = Diary
         fields = ['ymd', 'title', 'content', 'moods', 'hashtags', 'images']
 
     def create(self, validated_data):
-        moods = validated_data.pop('moods')  # 클라이언트가 보낸 Mood 리스트
-        hashtags = validated_data.pop('hashtags')  # 클라이언트가 보낸 hashtag 리스트
+        images = validated_data.pop('images', None)
+        moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
+        hashtags = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
+
         diary = Diary.objects.create(user=request.user, **validated_data)
         diary.moods.set(moods)  # Many-to-many 관계 설정
         diary.hashtags.set(hashtags)  # Many-to-many 관계 설정
+
+        if images:
+            for image in images:
+                DiaryImage.objects.create(diary=diary, **image)
+
         return diary
 
     def update(self, instance, validated_data):
+        images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)
         hashtags = validated_data.pop('hashtags', None)
         instance.title = validated_data.get('title', instance.title)
@@ -80,6 +84,10 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
             if hashtags:
                 instance.hashtags.clear()
                 instance.hashtags.set(hashtags)
+            if images:
+                instance.images.all().delete()
+                for image in images:
+                    DiaryImage.objects.create(diary=instance, **image)
 
         return instance
 
