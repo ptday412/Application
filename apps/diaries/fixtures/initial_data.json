@@ -1,0 +1,30 @@
+[
+    {
+        "model": "diaries.hashtag",
+        "pk": 1,
+        "fields": {
+            "name": "#성수동"
+        }
+    },
+    {
+        "model": "diaries.hashtag",
+        "pk": 2,
+        "fields": {
+            "name": "#블프"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 1,
+        "fields": {
+            "name": "행복"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 2,
+        "fields": {
+            "name": "아쉬움"
+        }
+    }
+]
