@@ -61,7 +61,6 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
-        print(hashtags_data)
 
         diary = Diary.objects.create(user=request.user, **validated_data)
         diary.moods.set(moods)  # Many-to-many 관계 설정
