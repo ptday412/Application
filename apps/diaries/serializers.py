@@ -49,7 +49,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
     hashtags = serializers.CharField(required=True)
     images = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
-        write_only=True, required=False
+        write_only=True,
     )
 
     class Meta:
