@@ -3,12 +3,6 @@ from .models import Mood, Hashtag, Diary, DiaryImage
 from django.db import transaction
 
 
-class DiaryImageWriteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DiaryImage
-        fields = ['image']
-
-
 class DiaryImageReadSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)  # 이미지 URL 반환
 
@@ -27,13 +21,6 @@ class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hashtag
         fields = ['name']
-
-
-class DiaryImageSerializer(serializers.ModelSerializer):
-    class Meta :
-        model = DiaryImage
-        fields='__all__'
-        read_only_fields = ['diary',]
 
 
 class DiaryWriteSerializer(serializers.ModelSerializer):
