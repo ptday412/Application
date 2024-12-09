@@ -76,6 +76,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)
         hashtags = validated_data.pop('hashtags', None)
+        instance.ymd = validated_data.get('ymd', instance.ymd)
         instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
         instance.save()
