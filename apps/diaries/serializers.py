@@ -49,7 +49,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
     hashtags = serializers.CharField(required=True)
     images = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
-        write_only=True,
+        write_only=True, required=False
     )
 
     class Meta:
@@ -94,9 +94,13 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
                 instance.moods.set(moods)
             if hashtags_data:
                 instance.hashtags.clear()
-                for hashtag_name in hashtags_data:
-                    hashtag, created = Hashtag.objects.get_or_create(name=hashtag_name)
-                    instance.hashtags.add(hashtag)
+                hashtag_list = hashtags_data.split(',')
+                hashtags = []
+                for hashtag in hashtag_list:
+                    name = hashtag.replace(' ', '')
+                    hashtag, created = Hashtag.objects.get_or_create(name=name)
+                    hashtags.append(hashtag)
+                instance.hashtags.set(hashtags)
             if images:
                 instance.images.all().delete()
                 for image in images:
