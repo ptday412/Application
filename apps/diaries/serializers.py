@@ -47,7 +47,10 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         slug_field='name',
         queryset=Hashtag.objects.all()
     )
-    images = DiaryImageWriteSerializer(many=True)
+    images = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=False, use_url=False),
+        write_only=True,
+    )
 
     class Meta:
         model = Diary
@@ -65,7 +68,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
         if images:
             for image in images:
-                DiaryImage.objects.create(diary=diary, **image)
+                DiaryImage.objects.create(diary=diary, image=image)
 
         return diary
 
@@ -87,7 +90,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
             if images:
                 instance.images.all().delete()
                 for image in images:
-                    DiaryImage.objects.create(diary=instance, **image)
+                    DiaryImage.objects.create(diary=instance, image=image)
 
         return instance
 
