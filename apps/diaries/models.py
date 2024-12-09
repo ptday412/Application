@@ -6,6 +6,7 @@ User = get_user_model()
 
 class Mood(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    category = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
