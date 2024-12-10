@@ -25,23 +25,12 @@ class HashtagSerializer(serializers.ModelSerializer):
 
 class DiaryWriteSerializer(serializers.ModelSerializer):
     moods = serializers.CharField(required=True)
-    # hashtags = serializers.ListField(
-    #     child=serializers.CharField(max_length=50),
-    #     write_only=True
-    # )
-    hashtags = serializers.CharField(required=True)
     images = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
         write_only=True, required=False
     )
 
     def validate(self, data):
-        # Hashtags 검증
-        hashtags = data.get('hashtags', '')
-        hashtag_list = [tag.strip() for tag in hashtags.split(',') if tag.strip()]
-        if len(hashtag_list) > 3:
-            raise serializers.ValidationError("You can only add up to 3 hashtags.")
-
         # Images 검증
         images = data.get('images', [])
         if len(images) > 3:
@@ -51,23 +40,14 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'title', 'content', 'moods', 'hashtags', 'images']
+        fields = ['ymd', 'title', 'content', 'moods', 'images']
 
     def create(self, validated_data):
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         mood_id = Mood.objects.get(name=moods)
-        hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         diary = Diary.objects.create(user=request.user, moods=mood_id,  **validated_data)
-
-        hashtag_list = hashtags_data.split(',')
-        hashtags = []
-        for hashtag in hashtag_list:
-            name = hashtag.replace(' ', '')
-            hashtag, created = Hashtag.objects.get_or_create(name=name)
-            hashtags.append(hashtag)
-        diary.hashtags.set(hashtags)  # Many-to-many 관계 설정
 
         if images:
             for image in images:
@@ -79,7 +59,6 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)
         mood_id = Mood.objects.get(name=moods)
-        hashtags_data = validated_data.pop('hashtags', None)
         instance.ymd = validated_data.get('ymd', instance.ymd)
         instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
@@ -87,15 +66,6 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         instance.save()
 
         with transaction.atomic():
-            if hashtags_data:
-                instance.hashtags.clear()
-                hashtag_list = hashtags_data.split(',')
-                hashtags = []
-                for hashtag in hashtag_list:
-                    name = hashtag.replace(' ', '')
-                    hashtag, created = Hashtag.objects.get_or_create(name=name)
-                    hashtags.append(hashtag)
-                instance.hashtags.set(hashtags)
             if images:
                 instance.images.all().delete()
                 for image in images:
