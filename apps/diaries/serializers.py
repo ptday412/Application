@@ -58,7 +58,6 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         if images:
             for image in images:
                 DiaryImage.objects.create(diary=diary, image=image)
-                pass
 
         return diary
 
