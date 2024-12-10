@@ -56,8 +56,8 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         return diary
 
     def update(self, instance, validated_data):
-        images = validated_data.pop('images', None)
-        moods = validated_data.pop('moods', None)
+        images = validated_data.pop('images', instance.images)
+        moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
         instance.ymd = validated_data.get('ymd', instance.ymd)
         instance.title = validated_data.get('title', instance.title)
@@ -123,8 +123,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         return diary
 
     def update(self, instance, validated_data):
-        images = validated_data.pop('images', None)
-        moods = validated_data.pop('moods', None)
+        images = validated_data.pop('images', instance.images)
+        moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)
         instance.ymd = validated_data.get('ymd', instance.ymd)
