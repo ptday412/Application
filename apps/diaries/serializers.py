@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Mood, Hashtag, Diary, DiaryImage
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 
 
 class DiaryImageReadSerializer(serializers.ModelSerializer):
@@ -43,9 +42,9 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
+        mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
-        mood_id = Mood.objects.get(name=moods)
         diary = Diary.objects.create(user=request.user, moods=mood_id,  **validated_data)
 
         hashtag_list = hashtags_data.split(',')
