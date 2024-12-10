@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Mood, Hashtag, Diary, DiaryImage
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 
 class DiaryImageReadSerializer(serializers.ModelSerializer):
@@ -24,11 +25,7 @@ class HashtagSerializer(serializers.ModelSerializer):
 
 
 class DiaryWriteSerializer(serializers.ModelSerializer):
-    moods = serializers.SlugRelatedField(
-        many=True,
-        slug_field='name',
-        queryset=Mood.objects.all()
-    )
+    moods = serializers.CharField(required=True)
     # hashtags = serializers.ListField(
     #     child=serializers.CharField(max_length=50),
     #     write_only=True
@@ -48,9 +45,8 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
-
-        diary = Diary.objects.create(user=request.user, **validated_data)
-        diary.moods.set(moods)  # Many-to-many 관계 설정
+        mood_id = Mood.objects.get(name=moods)
+        diary = Diary.objects.create(user=request.user, moods=mood_id,  **validated_data)
 
         hashtag_list = hashtags_data.split(',')
         hashtags = []
@@ -63,22 +59,22 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         if images:
             for image in images:
                 DiaryImage.objects.create(diary=diary, image=image)
+                pass
 
         return diary
 
     def update(self, instance, validated_data):
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)
+        mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)
         instance.ymd = validated_data.get('ymd', instance.ymd)
         instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
+        instance.moods = mood_id
         instance.save()
 
         with transaction.atomic():
-            if moods:
-                instance.moods.clear()
-                instance.moods.set(moods)
             if hashtags_data:
                 instance.hashtags.clear()
                 hashtag_list = hashtags_data.split(',')

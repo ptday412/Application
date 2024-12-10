@@ -23,7 +23,9 @@ class Diary(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="diary_owner"
         )
-    moods = models.ManyToManyField(Mood, related_name='diaries_by_mood')
+    moods = models.ForeignKey(
+        Mood, on_delete=models.PROTECT, related_name='diaries_by_mood'
+        )
     hashtags = models.ManyToManyField(Hashtag, related_name='diaries_by_hashtag')
     ymd = models.DateTimeField()
     title = models.CharField(max_length=120)
@@ -38,4 +40,4 @@ class DiaryImage(models.Model):
         Diary, on_delete=models.CASCADE, related_name="images"
         )
     image = models.ImageField(upload_to="%Y/%m/%d", blank=True, null=True)
-    # ai_analyze = models.CharField()
+    ai_analyze = models.TextField()
