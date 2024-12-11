@@ -32,6 +32,13 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
     content = serializers.CharField(required=False)
 
     def validate(self, data):
+        # 1일 1다이어리 제한
+        ymd = data.get('ymd')
+        request = self.context.get('request')
+        diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
+        if diary_exists:
+            raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
+
         # Images 검증
         images = data.get('images', [])
         if len(images) > 3:
@@ -88,6 +95,13 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         fields = ['ymd', 'content', 'moods', 'hashtags', 'images']
 
     def validate(self, data):
+        # 1일 1다이어리 제한
+        ymd = data.get('ymd')
+        request = self.context.get('request')
+        diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
+        if diary_exists:
+            raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
+
         # Hashtags 검증
         hashtags = data.get('hashtags', '')
         hashtag_list = [tag.strip() for tag in hashtags.split(',') if tag.strip()]
