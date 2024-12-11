@@ -28,11 +28,10 @@ class Diary(models.Model):
         )
     hashtags = models.ManyToManyField(Hashtag, related_name='diaries_by_hashtag')
     ymd = models.DateTimeField()
-    title = models.CharField(max_length=120)
-    content = models.TextField()
+    content = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.content
 
 
 class DiaryImage(models.Model):

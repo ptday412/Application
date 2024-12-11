@@ -29,6 +29,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
         write_only=True, required=False
     )
+    content = serializers.CharField(required=False)
 
     def validate(self, data):
         # Images 검증
@@ -40,7 +41,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'title', 'content', 'moods', 'images']
+        fields = ['ymd', 'content', 'moods', 'images']
 
     def create(self, validated_data):
         images = validated_data.pop('images', None)
@@ -60,7 +61,6 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
         instance.ymd = validated_data.get('ymd', instance.ymd)
-        instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
         instance.moods = mood_id
         instance.save()
@@ -81,10 +81,11 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
         write_only=True
     )
+    content = serializers.CharField(required=False)
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'title', 'content', 'moods', 'hashtags', 'images']
+        fields = ['ymd', 'content', 'moods', 'hashtags', 'images']
 
     def validate(self, data):
         # Hashtags 검증
@@ -128,7 +129,6 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)
         instance.ymd = validated_data.get('ymd', instance.ymd)
-        instance.title = validated_data.get('title', instance.title)
         instance.content = validated_data.get('content', instance.content)
         instance.moods = mood_id
         instance.save()
