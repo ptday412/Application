@@ -53,4 +53,5 @@ python manage.py runserver
 ## How to easily add initial data
 ```
 python manage.py loaddata initial_data.json --settings=config.settings.the_execution_environment_you_want
+python utils.py
 ```
