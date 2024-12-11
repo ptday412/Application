@@ -41,8 +41,8 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
         # Images 검증
         images = data.get('images', [])
-        if len(images) > 3:
-            raise serializers.ValidationError("You can only upload up to 3 images.")
+        if len(images) > 1:
+            raise serializers.ValidationError("You can only upload up to 1 images.")
 
         return data
 
