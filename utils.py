@@ -6,8 +6,7 @@ django.setup()
 from faker import Faker
 from apps.accounts.models import User
 from apps.diaries.models import Diary, Mood
-import random
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 fake = Faker()
 
