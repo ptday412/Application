@@ -6,6 +6,7 @@ urlpatterns = [
     path('onboarding/', views.OnboardingView.as_view()),
     path('signup/', views.SignupView.as_view()),
     path('login/', TokenObtainPairView.as_view()),
+    path('<str:username>/', views.UserDetailDeleteView.as_view()),
     path('<how>/logout/', views.logout), # 의도: how에 token입력 시 일반 로그아웃
     path('token/refresh/', TokenRefreshView.as_view()),
 ]

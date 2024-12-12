@@ -68,3 +68,18 @@ class OnboardingSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    interests = serializers.SerializerMethodField()
+    personalities = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['interests', 'personalities', 'gender', 'birth', 'nickname', 'profile_picture']
+
+    def get_interests(self, obj):
+        return [interest.name for interest in obj.interests.all()]
+
+    def get_personalities(self, obj):
+        return [personality.name for personality in obj.personalities.all()]
