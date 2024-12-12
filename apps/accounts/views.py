@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import (
     RetrieveDestroyAPIView
 )
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -65,3 +66,15 @@ def logout(request, how):
         return Response({'message': '토큰 로그아웃 성공'}, status=status.HTTP_200_OK)
     if how == 'kakao':
         pass
+
+@api_view(['PUT'])
+def update_nickname(request, username):
+    if username != request.user.username:
+        return Response({"error": "본인 이외의 닉네임 변경 불가능"}, status=status.HTTP_400_BAD_REQUEST)
+    new_nickname = request.data.get('nickname')
+    if not new_nickname:
+        return Response({"error": "닉네임 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+    user = get_object_or_404(User, username=username)
+    user.nickname = new_nickname
+    user.save()
+    return Response({"message": f"'{new_nickname}'으로 변경됨"}, status=status.HTTP_200_OK)
