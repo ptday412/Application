@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from .models import Interest, Personality
+import random
 
 User = get_user_model()
 
@@ -19,8 +20,11 @@ class SignupSerializer(serializers.Serializer):
     )
     
     def create(self, validated_data):
+        names = ['성장마스터', '내면탐험가', '기록왕', '기록이', '끄적이', '메모쟁이', '자기분석러', '일기천재', '성장메이트', '새싹기록', '행복충전']
+        selected_name = random.choice(names)
         user = User.objects.create_user(
             username = validated_data['username'],
+            nickname = selected_name
         )
         user.set_password(validated_data['password'])
         user.save()
