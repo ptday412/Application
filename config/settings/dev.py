@@ -4,7 +4,7 @@ SECRET_KEY = env('DEV_SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['kirolog.com']
+ALLOWED_HOSTS = ['kirolog.com', 'http://127.0.0.1:8000/']
 
 DATABASES = {
     "default": {
