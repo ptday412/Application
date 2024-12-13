@@ -1,0 +1,163 @@
+[
+    {
+        "model": "accounts.personality",
+        "pk": 1,
+        "fields": {
+            "name": "외향적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 2,
+        "fields": {
+            "name": "내향적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 3,
+        "fields": {
+            "name": "감성적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 4,
+        "fields": {
+            "name": "논리적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 5,
+        "fields": {
+            "name": "계획적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 6,
+        "fields": {
+            "name": "즉흥적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 7,
+        "fields": {
+            "name": "창의적"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 8,
+        "fields": {
+            "name": "신중함"
+        }
+    },
+    {
+        "model": "accounts.personality",
+        "pk": 9,
+        "fields": {
+            "name": "도전정신"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 1,
+        "fields": {
+            "name": "음식"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 2,
+        "fields": {
+            "name": "음악"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 3,
+        "fields": {
+            "name": "영화"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 4,
+        "fields": {
+            "name": "독서"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 5,
+        "fields": {
+            "name": "운동"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 6,
+        "fields": {
+            "name": "건강"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 7,
+        "fields": {
+            "name": "여행"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 8,
+        "fields": {
+            "name": "패션"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 9,
+        "fields": {
+            "name": "예술"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 10,
+        "fields": {
+            "name": "취미"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 11,
+        "fields": {
+            "name": "기술"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 12,
+        "fields": {
+            "name": "자기계발"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 13,
+        "fields": {
+            "name": "재테크"
+        }
+    },
+    {
+        "model": "accounts.interest",
+        "pk": 14,
+        "fields": {
+            "name": "뷰티"
+        }
+    }
+]

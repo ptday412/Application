@@ -1,0 +1,208 @@
+[
+    {
+        "model": "diaries.hashtag",
+        "pk": 1,
+        "fields": {
+            "name": "#성수동"
+        }
+    },
+    {
+        "model": "diaries.hashtag",
+        "pk": 2,
+        "fields": {
+            "name": "#블프"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 1,
+        "fields": {
+            "name": "설렘",
+            "category": "희"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 2,
+        "fields": {
+            "name": "뿌듯함",
+            "category": "희"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 3,
+        "fields": {
+            "name": "감동",
+            "category": "희"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 4,
+        "fields": {
+            "name": "만족감",
+            "category": "희"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 5,
+        "fields": {
+            "name": "행복감",
+            "category": "희"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 6,
+        "fields": {
+            "name": "분노",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 7,
+        "fields": {
+            "name": "짜증",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 8,
+        "fields": {
+            "name": "억울함",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 9,
+        "fields": {
+            "name": "불쾌함",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 10,
+        "fields": {
+            "name": "좌절",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 11,
+        "fields": {
+            "name": "답답함",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 12,
+        "fields": {
+            "name": "초조함",
+            "category": "노"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 13,
+        "fields": {
+            "name": "슬픔",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 14,
+        "fields": {
+            "name": "속상함",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 15,
+        "fields": {
+            "name": "우울함",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 16,
+        "fields": {
+            "name": "외로움",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 17,
+        "fields": {
+            "name": "후회",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 18,
+        "fields": {
+            "name": "무기력",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 19,
+        "fields": {
+            "name": "그리움",
+            "category": "애"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 20,
+        "fields": {
+            "name": "즐거움",
+            "category": "락"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 21,
+        "fields": {
+            "name": "따뜻함",
+            "category": "락"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 22,
+        "fields": {
+            "name": "기대감",
+            "category": "락"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 23,
+        "fields": {
+            "name": "여유로움",
+            "category": "락"
+        }
+    },
+    {
+        "model": "diaries.mood",
+        "pk": 24,
+        "fields": {
+            "name": "평온함",
+            "category": "락"
+        }
+    }
+]
