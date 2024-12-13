@@ -211,4 +211,5 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
         # ymd = datetime.date.today()
+        # validated_data['ymd'] = ymd
         return super().create(validated_data)
