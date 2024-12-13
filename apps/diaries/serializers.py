@@ -187,7 +187,7 @@ class DiaryReadSerializer(serializers.ModelSerializer):
 class AiStatisticSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
-        fields = ['ymd', 'emotions_summary', 'consolation', 'recommend_activities', 'recommend_reason']
+        fields = ['emotions_summary', 'consolation', 'recommend_activities', 'recommend_reason']
     
     # def validate(self, data):
     #     request = self.context['request']
@@ -210,6 +210,6 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
-        # ymd = datetime.date.today()
-        # validated_data['ymd'] = ymd
+        ymd = datetime.date.today()
+        validated_data['ymd'] = ymd
         return super().create(validated_data)
