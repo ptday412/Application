@@ -40,3 +40,14 @@ class DiaryImage(models.Model):
         )
     image = models.ImageField(upload_to="%Y/%m/%d", blank=True, null=True)
     ai_analyze = models.TextField()
+
+
+class Statistics(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="statistics"
+    )
+    ymd = models.DateField()
+    emotions_summary = models.CharField(max_length=50) # 감정 요약
+    consolation = models.CharField(max_length=100) # 위로의 말
+    recommend_activities = models.TextField() # 추천활동
+    recommend_reason = models.TextField() # 추천이유

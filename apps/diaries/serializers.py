@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Mood, Hashtag, Diary, DiaryImage
+from .models import Mood, Hashtag, Diary, DiaryImage, Statistics
 from django.db import transaction
+import datetime
 
 
 class DiaryImageReadSerializer(serializers.ModelSerializer):
@@ -181,3 +182,33 @@ class DiaryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
         fields = ['id', 'ymd', 'title', 'content', 'moods', 'hashtags', 'images']
+
+
+class AiStatisticSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Statistics
+        fields = ['ymd', 'emotions_summary', 'consolation', 'recommend_activities', 'recommend_reason']
+    
+    # def validate(self, data):
+    #     request = self.context['request']
+    #     # 메서드가 POST면
+    #     if request.method == 'POST':
+    #         # 현재 날짜가 일요일인지 확인
+    #         today = datetime.date.today()
+    #         if today.weekday() != 6:  # 6: 일요일 (0: 월요일, ..., 6: 일요일)
+    #             raise serializers.ValidationError("통계는 일요일에만 생성 가능")
+            
+    #         ymd = self.validated_data['ymd']
+    #         user = self.context['request'].user
+    #         # 이미 그 주의 통계가 존재하는지
+    #         is_exists = Statistics.objects.filter(user=user, ymd=ymd).exists()
+    #         if is_exists:
+    #             raise serializers.ValidationError('이미 이 주의 통계가 존재합니다.')
+    #     return data
+    
+    def create(self, validated_data):
+        user = self.context['request'].user
+        # context에서 request.user 가져오기
+        validated_data['user'] = user  # user 필드에 request.user 저장
+        # ymd = datetime.date.today()
+        return super().create(validated_data)

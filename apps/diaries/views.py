@@ -1,9 +1,10 @@
 from rest_framework.permissions import IsAuthenticated
-from .models import Diary
+from .models import Diary, Statistics
 from .serializers import (
     DiaryWriteSerializer, 
     DiaryReadSerializer, 
     AiDiaryWriteSerializer,
+    AiStatisticSerializer,
 )
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 
@@ -44,3 +45,14 @@ class DiaryRUDView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Diary.objects.filter(user=user)
+
+
+class AiStatisticsLC(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Statistics.objects.all()
+    serializer_class = AiStatisticSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
