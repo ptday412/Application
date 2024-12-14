@@ -34,6 +34,7 @@ class DiaryLCView(ListCreateAPIView):
         user = self.request.user
         return Diary.objects.filter(user=user)
 
+
 class DiaryRUDView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
