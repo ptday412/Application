@@ -1,3 +1,4 @@
+import ast
 import os
 import psycopg2 #postgres
 import io
@@ -57,8 +58,8 @@ def ai_report():
     먼저 일기를 토대로 일주일 간 있었던 일을 요약해 줘.
     그리고 관심사와 성격, 일기를 토대로 활동을 추천해.
     '일기 요약', '활동 추천'과 같은 제목은 답변에 넣지 마.
-    답변은 이 양식을 따라 줘. : 일기를 요약한 내용, 추천 활동, 추천한 이유
-    추천 활동은 하나만 추천해줘
+    답변은 이 양식을 따라 줘. : ['일기를 요약한 내용', ['추천 활동','추천한 이유'] ]
+    추천 활동은 여러개여도 괜찮아.
     추천한 이유는 '~입니다.'와 같은 어투를 사용해 줘
     """
     user_instructions = f"""
@@ -80,5 +81,29 @@ def ai_report():
             },
         ],
     )
-    
+    data = completion.choices[0].message.content
+    try:
+        data_list = ast.literal_eval(data)
+        print(f'type of data_list is {type(data_list)}') # output: list
+    except ValueError as e:
+        print(f"error occured: {e}")
+    result = [data_list[0]] #최종 반환될 리스트
+    for item in data_list[1:]:
+        transformed_item = [[item[0]], [item[1]]]
+        result.append(transformed_item)
+    print(result)
     return completion.choices[0].message.content
+
+# #value of completion.choices[0].message.content
+# data = "['이번 주에는 다양한 일들이 있었고, 특히 운동을 하느라 바쁘게 보냈습니다. 읽고 싶은 책들도 몇 권 생겼고, 영화를 보면서 여유를 즐기기도 했습니다.', ['영화 감상', '영화는 여유를 느끼고 스트레스를 푸는 데 도움이 되기 때문입니다.']]"
+# # transforming data into list
+# try:
+#     data_list = ast.literal_eval(data)
+#     print(f'type of data_list is {type(data_list)}') # output: list
+# except ValueError as e:
+#     print(f"error occured: {e}")
+# result = [data_list[0]] #최종 반환될 리스트
+# for item in data_list[1:]:
+#     transformed_item = [[item[0]], [item[1]]]
+#     result.append(transformed_item)
+# print(result)
