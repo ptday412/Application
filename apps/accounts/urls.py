@@ -10,4 +10,5 @@ urlpatterns = [
     path('update-nickname/<str:username>/', views.update_nickname),
     path('<how>/logout/', views.logout), # 의도: how에 token입력 시 일반 로그아웃
     path('token/refresh/', TokenRefreshView.as_view()),
+    path('check-username/', views.CheckUsernameView.as_view()),
 ]
