@@ -35,6 +35,7 @@ def genarate_ai_diary(images, moods, hashtags):
     bucket_name = 'test-kilolog'
     #request에서 값 가져오기
     tmp_object_key = images #예시: https://test-kilolog.s3.ap-northeast-2.amazonaws.com/youngkyu/2024-12-15/test_image.jpg
+    print('>>>>>>>>>>>>>>>>>>>>>>', tmp_object_key)
     object_key = tmp_object_key[0].split('.com')[1] #tmp_object_key.split('.com')은 이런 값으로 변경됨. 이 중 키 부분인 인덱스 1의 값을 키로 사용['https://test-kilolog.s3.ap-northeast-2.amazonaws', '/youngkyu/2024-12-15/test_image.jpg']
     emotion = moods
     tmp_keywords = hashtags #'키워드1, 키워드2, 키워드3'와 같은 꼴
