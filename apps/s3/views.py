@@ -23,7 +23,7 @@ def call_lambda1(request):
     # 전송할 데이터
     data = {
         'username': request.user.username,
-        'ymd': request.data.get('ymd'),
+        'date': request.data.get('date'),
         'filename': request.data.get('filename')
     }
 
