@@ -21,17 +21,13 @@ User = get_user_model()
 
 class CheckUsernameView(APIView):
     permission_classes = [AllowAny]
-    print('왜안됨?')
     def get(self, request):
-        print('전')
-        username = request.query_params.get('username')
-        print('후')
+        username = request.data.get('username')
         
         if not username:
             return Response({"error": "username을 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
         
         is_exist = User.objects.filter(username=username).exists()
-        print('>>>>>>>>>>>>>>>존재하니?', is_exist)
 
         if is_exist:
             return Response({"available": False, "message": "해당 유저네임이 이미 존재합니다."}, status=status.HTTP_200_OK)
