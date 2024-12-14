@@ -7,6 +7,7 @@ from django.db import transaction
 import datetime
 import environ
 from .image_analyze import genarate_ai_diary
+from .ai_report import ai_report
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -255,4 +256,5 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['user'] = user  # user 필드에 request.user 저장
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
+        validated_data['recommend_activities'] = ai_report()
         return super().create(validated_data)
