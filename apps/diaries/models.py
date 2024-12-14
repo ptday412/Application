@@ -48,7 +48,7 @@ class Statistics(models.Model):
         User, on_delete=models.CASCADE, related_name="statistics"
     )
     ymd = models.DateField()
-    emotions_summary = models.CharField(max_length=50, blank=True, null=True) # 감정 요약
-    consolation = models.CharField(max_length=100, blank=True, null=True) # 위로의 말
+    emotions_summary = models.TextField(blank=True, null=True) # 감정 요약
+    consolation = models.TextField(blank=True, null=True) # 위로의 말
     recommend_activities = models.TextField(blank=True, null=True) # 추천활동
     recommend_reason = models.TextField(blank=True, null=True) # 추천이유

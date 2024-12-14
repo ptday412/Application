@@ -256,5 +256,9 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['user'] = user  # user 필드에 request.user 저장
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
-        validated_data['recommend_activities'] = ai_report()
+        all = ai_report()
+
+        validated_data['emotions_summary'] = all[0]
+        validated_data['recommend_activities'] = all[1][0]
+        validated_data['recommend_reason'] = all[1][1]
         return super().create(validated_data)
