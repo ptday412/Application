@@ -5,6 +5,7 @@ attrs==24.2.0
 boto3==1.35.80
 botocore==1.35.80
 certifi==2024.8.30
+charset-normalizer==3.4.0
 colorama==0.4.6
 distro==1.9.0
 Django==5.1.4
@@ -35,6 +36,7 @@ PyJWT==2.10.1
 python-dateutil==2.9.0.post0
 PyYAML==6.0.2
 referencing==0.35.1
+requests==2.32.3
 rpds-py==0.22.3
 s3transfer==0.10.4
 six==1.17.0
