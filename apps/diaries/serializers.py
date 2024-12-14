@@ -5,11 +5,11 @@ import datetime
 
 
 class DiaryImageReadSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True)  # 이미지 URL 반환
+    image = serializers.CharField()
 
     class Meta:
         model = DiaryImage
-        fields = ['image']  # 이미지 ID와 URL만 포함
+        fields = ['image']
 
 
 class MoodSerializer(serializers.ModelSerializer):
@@ -170,16 +170,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
 class DiaryReadSerializer(serializers.ModelSerializer):
     images = DiaryImageReadSerializer(many=True, read_only=True)
-    moods = serializers.SlugRelatedField(
-        many=True,
-        slug_field='name',
-        read_only=True,
-    )
-    hashtags = serializers.SlugRelatedField(
-        many=True,
-        slug_field='name',
-        read_only=True,
-    )
+    moods = MoodSerializer(read_only=True)
+    hashtags = HashtagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Diary
