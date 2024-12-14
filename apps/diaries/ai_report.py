@@ -58,7 +58,7 @@ def ai_report():
     그리고 관심사와 성격, 일기를 토대로 활동을 추천해.
     '일기 요약', '활동 추천'과 같은 제목은 답변에 넣지 마.
     답변은 이 양식을 따라 줘. : ['일기를 요약한 내용', ['추천 활동','추천한 이유'] ]
-    추천 활동은 하나만만 추천해줘
+    추천 활동은 하나만 추천해줘
     추천한 이유는 '~입니다.'와 같은 어투를 사용해 줘
     """
     user_instructions = f"""
@@ -80,10 +80,5 @@ def ai_report():
             },
         ],
     )
-    # completion.choices[0].message.content = ['요약.', ['활동1', '이유1'], ['활동2', '이유2'], ['활동3', '이유3']]
-    result = completion.choices[0].message.content[0]
-    for item in completion.choices[0].message.content[1:]:
-        transformed_item = [[item[0]], [item[1]]]
-        result.append(transformed_item)
-
-    return result
+    
+    return completion.choices[0].message.content
