@@ -81,7 +81,7 @@ def ai_report():
         ],
     )
     # completion.choices[0].message.content = ['요약.', ['활동1', '이유1'], ['활동2', '이유2'], ['활동3', '이유3']]
-    result = [completion.choices[0].message.content[0]]
+    result = completion.choices[0].message.content[0]
     for item in completion.choices[0].message.content[1:]:
         transformed_item = [[item[0]], [item[1]]]
         result.append(transformed_item)
