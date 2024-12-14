@@ -46,7 +46,7 @@ class DiaryImageReadSerializer(serializers.ModelSerializer):
     def get_presigned_url(self, obj):
         request = self.context['request']
         username = request.user.username
-        date =request.data.get('ymd')
+        date = obj.diary.ymd
         filename = obj.image
 
         return generate_presigned_url(username, date, filename)
