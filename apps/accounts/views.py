@@ -68,20 +68,13 @@ class UserDetailDeleteView(RetrieveDestroyAPIView):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def logout(request, how):
-    login_ways = ['token', 'kakao']
-    if how not in login_ways:
-        return Response({'error': how + '의 url은 지원하고 있지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    if how == 'token':
-        refresh = request.data.get("refresh")
-        if not refresh:
-            return Response({"message": "refresh token 필요"}, status=status.HTTP_400_BAD_REQUEST)
-        token = RefreshToken(refresh)
-        token.blacklist()
-        return Response({'message': '토큰 로그아웃 성공'}, status=status.HTTP_200_OK)
-    if how == 'kakao':
-        pass
+def logout(request):
+    refresh = request.data.get("refresh")
+    if not refresh:
+        return Response({"message": "refresh token 필요"}, status=status.HTTP_400_BAD_REQUEST)
+    token = RefreshToken(refresh)
+    token.blacklist()
+    return Response({'message': '토큰 로그아웃 성공'}, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
 def update_nickname(request, username):
