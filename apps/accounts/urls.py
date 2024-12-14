@@ -8,7 +8,7 @@ urlpatterns = [
     path('login/', TokenObtainPairView.as_view()),
     path('<str:username>/', views.UserDetailDeleteView.as_view()),
     path('update-nickname/<str:username>/', views.update_nickname),
-    path('token/logout/', views.logout), # 의도: how에 token입력 시 일반 로그아웃
+    path('token/logout/', views.logout),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('check/username/', views.CheckUsernameView.as_view()),
 ]
