@@ -91,19 +91,4 @@ def ai_report():
     for item in data_list[1:]:
         transformed_item = [[item[0]], [item[1]]]
         result.append(transformed_item)
-    print(result)
     return result
-
-# #value of completion.choices[0].message.content
-# data = "['이번 주에는 다양한 일들이 있었고, 특히 운동을 하느라 바쁘게 보냈습니다. 읽고 싶은 책들도 몇 권 생겼고, 영화를 보면서 여유를 즐기기도 했습니다.', ['영화 감상', '영화는 여유를 느끼고 스트레스를 푸는 데 도움이 되기 때문입니다.']]"
-# # transforming data into list
-# try:
-#     data_list = ast.literal_eval(data)
-#     print(f'type of data_list is {type(data_list)}') # output: list
-# except ValueError as e:
-#     print(f"error occured: {e}")
-# result = [data_list[0]] #최종 반환될 리스트
-# for item in data_list[1:]:
-#     transformed_item = [[item[0]], [item[1]]]
-#     result.append(transformed_item)
-# print(result)
