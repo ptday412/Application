@@ -167,7 +167,12 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         content = genarate_ai_diary(images, moods, hashtags_data)
-        diary = Diary.objects.create(user=request.user, moods=mood_id, content=content  **validated_data)
+        diary = Diary.objects.create(
+            user=request.user, 
+            moods=mood_id, 
+            content=content, 
+            **validated_data
+            )
 
         hashtag_list = hashtags_data.split(',')
         hashtags = []
