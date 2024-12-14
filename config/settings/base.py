@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # local apps
     'apps.accounts',
     'apps.diaries',
+    'apps.s3'
 ]
 
 MIDDLEWARE = [

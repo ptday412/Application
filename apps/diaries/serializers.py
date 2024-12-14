@@ -14,32 +14,6 @@ environ.Env.read_env(
     env_file=os.path.join(BASE_DIR, '.env')
 )
 
-# API URL
-url = env('API_URL')
-
-def call_lambda1(username, ymd, filename):
-    # 전송할 데이터
-    data = {
-        'username': username,
-        'ymd': ymd,
-        'filename': filename
-    }
-
-    # PUT 요청 보내기
-    response = requests.put(url, data=data)
-
-    # 응답 코드 및 본문 출력
-    if response.status_code == 200:
-        presigned_url = response.text
-        return ("Presigned URL:", presigned_url)
-
-    else:
-        return(f"error occured: {response.status_code}")
-
-    # username = 'sptcnl1'
-    # ymd = '2024-10-19'
-    # filename = '파일네임임'
-    # return(call_lambda1(username, ymd, filename)) #로깅 용도로 print했지만 실제로 장고에선 프론트에게 return해야 할 값
 
 def generate_presigned_url(username, date, filename, expiration=3600):
     # S3 키 생성
@@ -130,7 +104,6 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         if images:
             for image in images:
                 DiaryImage.objects.create(diary=diary, image=image, username=request.user.username)
-                call_lambda1(request.user.username, ymd, image)
 
         return diary
 
