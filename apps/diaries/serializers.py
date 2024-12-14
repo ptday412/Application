@@ -257,9 +257,12 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
         all = ai_report()
-        print(all)
+        print('>>>>>>>>>>>>>>>', all)
 
         validated_data['emotions_summary'] = all[0]
+        print('>>>>>>>>>>>>>>>', all[0])
         validated_data['recommend_activities'] = all[1][0]
+        print('>>>>>>>>>>>>>>>', all[1][0])
         validated_data['recommend_reason'] = all[1][1]
+        print('>>>>>>>>>>>>>>>', all[1][1])
         return super().create(validated_data)
