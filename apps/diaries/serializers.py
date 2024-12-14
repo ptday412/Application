@@ -1,15 +1,55 @@
+import os
+import boto3
+from config.settings.base import BASE_DIR
 from rest_framework import serializers
 from .models import Mood, Hashtag, Diary, DiaryImage, Statistics
 from django.db import transaction
 import datetime
+import environ
+
+env = environ.Env(DEBUG=(bool, True))
+
+environ.Env.read_env(
+    env_file=os.path.join(BASE_DIR, '.env')
+)
+
+def generate_presigned_url(username, date, filename, expiration=3600):
+    # S3 키 생성
+    bucket_name = 'test-kilolog'
+    region_name = 'ap-northeast-2'
+    s3_key = f"{username}/{date}/{filename}"
+
+    # S3 클라이언트 생성
+    s3_client = boto3.client(
+        's3',
+        region_name=region_name,
+        aws_access_key_id=env("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=env("AWS_SECRET_ACCESS_KEY"),
+    )
+
+    # URL 생성
+    presigned_url = s3_client.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': bucket_name, 'Key': s3_key},
+        ExpiresIn=expiration
+    )
+    return presigned_url
 
 
 class DiaryImageReadSerializer(serializers.ModelSerializer):
-    image = serializers.CharField()
+    presigned_url = serializers.SerializerMethodField()
 
     class Meta:
         model = DiaryImage
-        fields = ['image']
+        fields = ['presigned_url']
+    
+    def get_presigned_url(self, obj):
+        request = self.context['request']
+        username = request.user.username
+        date =request.data.get('ymd')
+        filename = obj.image
+
+        return generate_presigned_url(username, date, filename)
 
 
 class MoodSerializer(serializers.ModelSerializer):
