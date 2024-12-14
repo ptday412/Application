@@ -1,12 +1,12 @@
 import os
 import boto3
-import requests
 from config.settings.base import BASE_DIR
 from rest_framework import serializers
 from .models import Mood, Hashtag, Diary, DiaryImage, Statistics
 from django.db import transaction
 import datetime
 import environ
+from .image_analyze import genarate_ai_diary
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -94,12 +94,13 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         fields = ['ymd', 'content', 'moods', 'images']
 
     def create(self, validated_data):
+
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         mood_id = Mood.objects.get(name=moods)
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        diary = Diary.objects.create(user=request.user, moods=mood_id,  **validated_data)
+        diary = Diary.objects.create(user=request.user, moods=mood_id, **validated_data)
 
         if images:
             for image in images:
@@ -133,11 +134,10 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         child=serializers.CharField(),
         write_only=True, required=True
     )
-    content = serializers.CharField(required=False)
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'content', 'moods', 'hashtags', 'images']
+        fields = ['ymd', 'moods', 'hashtags', 'images']
 
     def validate(self, data):
         # 1일 1다이어리 제한
@@ -166,7 +166,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
-        diary = Diary.objects.create(user=request.user, moods=mood_id,  **validated_data)
+        content = genarate_ai_diary(images, moods, hashtags_data)
+        diary = Diary.objects.create(user=request.user, moods=mood_id, content=content  **validated_data)
 
         hashtag_list = hashtags_data.split(',')
         hashtags = []
