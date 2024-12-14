@@ -220,12 +220,15 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
 class DiaryReadSerializer(serializers.ModelSerializer):
     images = DiaryImageReadSerializer(many=True, read_only=True)
-    moods = MoodSerializer(read_only=True)
+    moods = serializers.SerializerMethodField()
     hashtags = HashtagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Diary
         fields = ['id', 'ymd', 'content', 'moods', 'hashtags', 'images']
+    
+    def get_moods(self, obj):
+        return obj.moods.name if obj.moods else None
 
 
 class AiStatisticSerializer(serializers.ModelSerializer):
