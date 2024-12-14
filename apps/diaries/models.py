@@ -38,7 +38,8 @@ class DiaryImage(models.Model):
     diary = models.ForeignKey(
         Diary, on_delete=models.CASCADE, related_name="images"
         )
-    image = models.ImageField(upload_to="%Y/%m/%d", blank=True, null=True)
+    username = models.CharField(max_length=150)
+    image = models.TextField(blank=True, null=True)
     ai_analyze = models.TextField()
 
 

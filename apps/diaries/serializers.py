@@ -27,7 +27,7 @@ class HashtagSerializer(serializers.ModelSerializer):
 class DiaryWriteSerializer(serializers.ModelSerializer):
     moods = serializers.CharField(required=True)
     images = serializers.ListField(
-        child=serializers.ImageField(allow_empty_file=False, use_url=False),
+        child=serializers.CharField(),
         write_only=True, required=False
     )
     content = serializers.CharField(required=False)
@@ -60,11 +60,12 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
         if images:
             for image in images:
-                DiaryImage.objects.create(diary=diary, image=image)
+                DiaryImage.objects.create(diary=diary, image=image, username=request.user.username)
 
         return diary
 
     def update(self, instance, validated_data):
+        request = self.context.get('request')
         images = validated_data.pop('images', instance.images)
         moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
@@ -77,7 +78,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
             if images:
                 instance.images.all().delete()
                 for image in images:
-                    DiaryImage.objects.create(diary=instance, image=image)
+                    DiaryImage.objects.create(diary=instance, image=image, username=request.user.username)
 
         return instance
 
@@ -86,8 +87,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
     moods = serializers.CharField(required=True)
     hashtags = serializers.CharField(required=True)
     images = serializers.ListField(
-        child=serializers.ImageField(allow_empty_file=False, use_url=False),
-        write_only=True
+        child=serializers.CharField(),
+        write_only=True, required=True
     )
     content = serializers.CharField(required=False)
 
@@ -134,7 +135,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
         if images:
             for image in images:
-                DiaryImage.objects.create(diary=diary, image=image)
+                DiaryImage.objects.create(diary=diary, image=image, username=request.user.username)
 
         return diary
 
@@ -147,6 +148,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         instance.content = validated_data.get('content', instance.content)
         instance.moods = mood_id
         instance.save()
+        request = self.context.get('request')
 
         with transaction.atomic():
             if hashtags_data:
@@ -161,7 +163,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
             if images:
                 instance.images.all().delete()
                 for image in images:
-                    DiaryImage.objects.create(diary=instance, image=image)
+                    DiaryImage.objects.create(diary=instance, image=image, username=request.user.username)
 
         return instance
 
@@ -181,7 +183,7 @@ class DiaryReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['id', 'ymd', 'title', 'content', 'moods', 'hashtags', 'images']
+        fields = ['id', 'ymd', 'content', 'moods', 'hashtags', 'images']
 
 
 class AiStatisticSerializer(serializers.ModelSerializer):
