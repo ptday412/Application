@@ -28,17 +28,12 @@ def call_lambda1(request):
     }
 
     # PUT 요청 보내기
-    response = requests.put(url, data=data)
+    response = requests.put(url, json=data)
 
     # 응답 코드 및 본문 출력
     if response.status_code == 200:
         presigned_url = response.text
-        return Response({"Presigned URL:", presigned_url}, status=status.HTTP_200_OK)
+        return Response({presigned_url}, status=status.HTTP_200_OK)
 
     else:
         return Response({f"error occured: {response.status_code}"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # username = 'sptcnl1'
-    # ymd = '2024-10-19'
-    # filename = '파일네임임'
-    # return(call_lambda1(username, ymd, filename)) #로깅 용도로 print했지만 실제로 장고에선 프론트에게 return해야 할 값
