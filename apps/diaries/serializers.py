@@ -75,32 +75,41 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
     )
     content = serializers.CharField(required=False)
 
-    def validate(self, data):
-        # 1일 1다이어리 제한
-        ymd = data.get('ymd')
-        request = self.context.get('request')
-        diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
-        if diary_exists:
-            raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
+    # def validate(self, data):
+    #     # 1일 1다이어리 제한
+    #     ymd = data.get('ymd')
+    #     request = self.context.get('request')
+    #     diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
+    #     if diary_exists:
+    #         raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
 
-        # Images 검증
-        images = data.get('images', [])
-        if len(images) > 1:
-            raise serializers.ValidationError("You can only upload up to 1 images.")
+    #     # Images 검증
+    #     images = data.get('images', [])
+    #     if len(images) > 1:
+    #         raise serializers.ValidationError("You can only upload up to 1 images.")
 
-        return data
+    #     return data
 
     class Meta:
         model = Diary
         fields = ['ymd', 'content', 'moods', 'images']
 
     def create(self, validated_data):
+        # 1일 1다이어리 제한
+        ymd = validated_data.get('ymd')
+        request = self.context.get('request')
+        diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
+        if diary_exists:
+            raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
+
+        # Images 검증
+        images = validated_data.get('images', [])
+        if len(images) > 1:
+            raise serializers.ValidationError("You can only upload up to 1 images.")
 
         images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         mood_id = Mood.objects.get(name=moods)
-        request = self.context.get('request')
-        ymd = validated_data.get('ymd')
         diary = Diary.objects.create(user=request.user, moods=mood_id, **validated_data)
 
         if images:
