@@ -114,7 +114,13 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
         if images:
             for image in images:
-                DiaryImage.objects.create(diary=diary, image=image, username=request.user.username)
+                DiaryImage.objects.create(
+                    ymd=ymd, 
+                    user=request.user, 
+                    diary=diary, 
+                    image=image, 
+                    username=request.user.username,
+                )
 
         return diary
 
@@ -123,6 +129,11 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         images = validated_data.pop('images', instance.images)
         moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
+        new_ymd = validated_data.get('ymd')
+        if new_ymd != instance.ymd:
+            is_exists = Diary.objects.filter(ymd=new_ymd, user=request.user).exists()
+            if is_exists:
+                raise serializers.ValidationError('해당 날짜의 일기가 이미 존재합니다.') 
         instance.ymd = validated_data.get('ymd', instance.ymd)
         instance.content = validated_data.get('content', instance.content)
         instance.moods = mood_id
@@ -132,7 +143,13 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
             if images:
                 instance.images.all().delete()
                 for image in images:
-                    DiaryImage.objects.create(diary=instance, image=image, username=request.user.username)
+                    DiaryImage.objects.create(
+                        ymd=instance.ymd, 
+                        user=request.user, 
+                        diary=instance, 
+                        image=image, 
+                        username=request.user.username
+                    )
 
         return instance
 
@@ -177,12 +194,13 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         content = genarate_ai_diary(images, moods, hashtags_data)
+        ymd = validated_data.get('ymd')
         diary = Diary.objects.create(
             user=request.user, 
             moods=mood_id, 
             content=content, 
             **validated_data
-            )
+        )
 
         hashtag_list = hashtags_data.split(',')
         hashtags = []
@@ -194,7 +212,13 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
         if images:
             for image in images:
-                DiaryImage.objects.create(diary=diary, image=image, username=request.user.username)
+                DiaryImage.objects.create(
+                    ymd=ymd, 
+                    user=request.user, 
+                    diary=diary, 
+                    image=image, 
+                    username=request.user.username
+                )
 
         return diary
 
@@ -203,6 +227,11 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)
+        new_ymd = validated_data.get('ymd')
+        if new_ymd != instance.ymd:
+            is_exists = Diary.objects.filter(ymd=new_ymd, user=request.user).exists()
+            if is_exists:
+                raise serializers.ValidationError('해당 날짜의 일기가 이미 존재합니다.') 
         instance.ymd = validated_data.get('ymd', instance.ymd)
         instance.content = validated_data.get('content', instance.content)
         instance.moods = mood_id
@@ -222,7 +251,13 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
             if images:
                 instance.images.all().delete()
                 for image in images:
-                    DiaryImage.objects.create(diary=instance, image=image, username=request.user.username)
+                    DiaryImage.objects.create(
+                        ymd=instance.ymd, 
+                        user=request.user, 
+                        diary=instance, 
+                        image=image, 
+                        username=request.user.username
+                    )
 
         return instance
 
