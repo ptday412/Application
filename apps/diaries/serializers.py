@@ -39,20 +39,20 @@ def generate_presigned_url(username, date, filename, expiration=3600):
     return presigned_url
 
 
-class DiaryImageReadSerializer(serializers.ModelSerializer):
-    presigned_url = serializers.SerializerMethodField()
+# class DiaryImageReadSerializer(serializers.ModelSerializer):
+#     presigned_url = serializers.SerializerMethodField()
 
-    class Meta:
-        model = DiaryImage
-        fields = ['presigned_url']
+#     class Meta:
+#         model = DiaryImage
+#         fields = ['presigned_url']
     
-    def get_presigned_url(self, obj):
-        request = self.context['request']
-        username = request.user.username
-        date = obj.diary.ymd
-        filename = obj.image
+#     def get_presigned_url(self, obj):
+#         request = self.context['request']
+#         username = request.user.username
+#         date = obj.ymd
+#         filename = obj.image
 
-        return generate_presigned_url(username, date, filename)
+#         return generate_presigned_url(username, date, filename)
 
 
 class MoodSerializer(serializers.ModelSerializer):
@@ -115,9 +115,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         # if images:
         #     for image in images:
         #         DiaryImage.objects.create(
-        #             ymd=ymd, 
-        #             user=request.user, 
-        #             diary=diary, 
+        #             ymd=ymd,
         #             image=image, 
         #             username=request.user.username,
         #         )
@@ -263,16 +261,26 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
 
 class DiaryReadSerializer(serializers.ModelSerializer):
-    images = DiaryImageReadSerializer(many=True, read_only=True)
+    # images = DiaryImageReadSerializer(many=True, read_only=True)
     moods = serializers.SerializerMethodField()
     hashtags = HashtagSerializer(many=True, read_only=True)
+    presigned_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Diary
-        fields = ['id', 'ymd', 'content', 'moods', 'hashtags', 'images']
+        fields = ['id', 'ymd', 'content', 'moods', 'hashtags', 'presigned_url']
     
     def get_moods(self, obj):
         return obj.moods.name if obj.moods else None
+    
+    def get_presigned_url(self, obj):
+        request = self.context['request']
+        username = request.user.username
+        date = obj.ymd
+        images = DiaryImage.objects.filter(ymd=obj.ymd, username=request.user.username)
+        filename = images.values('image')
+
+        return generate_presigned_url(username, date, filename)
 
 
 class AiStatisticSerializer(serializers.ModelSerializer):

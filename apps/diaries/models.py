@@ -27,7 +27,7 @@ class Diary(models.Model):
         Mood, on_delete=models.PROTECT, related_name='diaries_by_mood'
         )
     hashtags = models.ManyToManyField(Hashtag, related_name='diaries_by_hashtag')
-    ymd = models.DateTimeField()
+    ymd = models.DateField()
     content = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -36,7 +36,7 @@ class Diary(models.Model):
 
 class DiaryImage(models.Model):
     username = models.CharField(max_length=150)
-    ymd = models.CharField(max_length=50)
+    ymd = models.DateField()
     image = models.TextField(blank=True, null=True)
 
 
