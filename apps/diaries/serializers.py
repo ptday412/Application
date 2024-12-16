@@ -191,8 +191,10 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        images = DiaryImage.objects.first(ymd=ymd, username=request.user.username)[0]['image']
-        content = genarate_ai_diary(images, moods, hashtags_data)
+        images = DiaryImage.objects.first(ymd=ymd, username=request.user.username)
+        filename1 = images.values('image')
+        filename2 = list(filename1)[0]['image']
+        content = genarate_ai_diary(filename2, moods, hashtags_data)
         diary = Diary.objects.create(
             user=request.user, 
             moods=mood_id, 
@@ -221,7 +223,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         return diary
 
     def update(self, instance, validated_data):
-        images = validated_data.pop('images', instance.images)
+        # images = validated_data.pop('images', instance.images)
         moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)
@@ -278,8 +280,11 @@ class DiaryReadSerializer(serializers.ModelSerializer):
         username = request.user.username
         date = obj.ymd
         images = DiaryImage.objects.filter(ymd=obj.ymd, username=request.user.username)
-        filename = images.values('image')[0]['image']
-        preprocessed_filename = filename.split('/')[-1]
+        filename1 = images.values('image')
+        # print(list(filename1)[0]['image'])
+        filename2 = list(filename1)[0]['image']
+
+        preprocessed_filename = filename2.split('/')[-1]
 
         return generate_presigned_url(username, date, preprocessed_filename)
 
