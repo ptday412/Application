@@ -112,15 +112,15 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         mood_id = Mood.objects.get(name=moods)
         diary = Diary.objects.create(user=request.user, moods=mood_id, **validated_data)
 
-        if images:
-            for image in images:
-                DiaryImage.objects.create(
-                    ymd=ymd, 
-                    user=request.user, 
-                    diary=diary, 
-                    image=image, 
-                    username=request.user.username,
-                )
+        # if images:
+        #     for image in images:
+        #         DiaryImage.objects.create(
+        #             ymd=ymd, 
+        #             user=request.user, 
+        #             diary=diary, 
+        #             image=image, 
+        #             username=request.user.username,
+        #         )
 
         return diary
 
@@ -139,17 +139,17 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         instance.moods = mood_id
         instance.save()
 
-        with transaction.atomic():
-            if images:
-                instance.images.all().delete()
-                for image in images:
-                    DiaryImage.objects.create(
-                        ymd=instance.ymd, 
-                        user=request.user, 
-                        diary=instance, 
-                        image=image, 
-                        username=request.user.username
-                    )
+        # with transaction.atomic():
+        #     if images:
+        #         instance.images.all().delete()
+        #         for image in images:
+        #             DiaryImage.objects.create(
+        #                 ymd=instance.ymd, 
+        #                 user=request.user, 
+        #                 diary=instance, 
+        #                 image=image, 
+        #                 username=request.user.username
+        #             )
 
         return instance
 
@@ -210,15 +210,15 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
             hashtags.append(hashtag)
         diary.hashtags.set(hashtags)  # Many-to-many 관계 설정
 
-        if images:
-            for image in images:
-                DiaryImage.objects.create(
-                    ymd=ymd, 
-                    user=request.user, 
-                    diary=diary, 
-                    image=image, 
-                    username=request.user.username
-                )
+        # if images:
+        #     for image in images:
+        #         DiaryImage.objects.create(
+        #             ymd=ymd, 
+        #             user=request.user, 
+        #             diary=diary, 
+        #             image=image, 
+        #             username=request.user.username
+        #         )
 
         return diary
 
