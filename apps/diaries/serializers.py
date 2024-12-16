@@ -281,12 +281,14 @@ class DiaryReadSerializer(serializers.ModelSerializer):
         date = obj.ymd
         images = DiaryImage.objects.filter(ymd=obj.ymd, username=request.user.username)
         filename1 = images.values('image')
-        # print(list(filename1)[0]['image'])
-        filename2 = list(filename1)[0]['image']
+        filename2 = list(filename1)
+        if filename2:
+            filename3 = filename2[0]
+            filename4 = filename3['image']
+            preprocessed_filename = filename4.split('/')[-1]
 
-        preprocessed_filename = filename2.split('/')[-1]
-
-        return generate_presigned_url(username, date, preprocessed_filename)
+            return generate_presigned_url(username, date, preprocessed_filename)
+        return None
 
 
 class AiStatisticSerializer(serializers.ModelSerializer):

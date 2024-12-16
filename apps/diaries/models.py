@@ -30,8 +30,8 @@ class Diary(models.Model):
     ymd = models.DateField()
     content = models.TextField(blank=True, null=True)
 
-    def __str__(self):
-        return self.content
+    # def __str__(self):
+    #     return self.content
 
 
 class DiaryImage(models.Model):
