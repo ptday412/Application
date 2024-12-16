@@ -69,10 +69,10 @@ class HashtagSerializer(serializers.ModelSerializer):
 
 class DiaryWriteSerializer(serializers.ModelSerializer):
     moods = serializers.CharField(required=True)
-    images = serializers.ListField(
-        child=serializers.CharField(),
-        write_only=True, required=False
-    )
+    # images = serializers.ListField(
+    #     child=serializers.CharField(),
+    #     write_only=True, required=False
+    # )
     content = serializers.CharField(required=False)
 
     # def validate(self, data):
@@ -92,7 +92,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'content', 'moods', 'images']
+        fields = ['ymd', 'content', 'moods']
 
     def create(self, validated_data):
         # 1일 1다이어리 제한
@@ -102,12 +102,12 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         if diary_exists:
             raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
 
-        # Images 검증
-        images = validated_data.get('images', [])
-        if len(images) > 1:
-            raise serializers.ValidationError("You can only upload up to 1 images.")
+        # # Images 검증
+        # images = validated_data.get('images', [])
+        # if len(images) > 1:
+        #     raise serializers.ValidationError("You can only upload up to 1 images.")
 
-        images = validated_data.pop('images', None)
+        # images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         mood_id = Mood.objects.get(name=moods)
         diary = Diary.objects.create(user=request.user, moods=mood_id, **validated_data)
@@ -124,7 +124,7 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         request = self.context.get('request')
-        images = validated_data.pop('images', instance.images)
+        # images = validated_data.pop('images', instance.images)
         moods = validated_data.pop('moods', instance.moods)
         mood_id = Mood.objects.get(name=moods)
         new_ymd = validated_data.get('ymd')
@@ -155,14 +155,14 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
 class AiDiaryWriteSerializer(serializers.ModelSerializer):
     moods = serializers.CharField(required=True)
     hashtags = serializers.CharField(required=True)
-    images = serializers.ListField(
-        child=serializers.CharField(),
-        write_only=True, required=True
-    )
+    # images = serializers.ListField(
+    #     child=serializers.CharField(),
+    #     write_only=True, required=True
+    # )
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'moods', 'hashtags', 'images']
+        fields = ['ymd', 'moods', 'hashtags']
 
     def validate(self, data):
         # 1일 1다이어리 제한
@@ -178,21 +178,21 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         if len(hashtag_list) > 3:
             raise serializers.ValidationError("You can only add up to 3 hashtags.")
 
-        # Images 검증
-        images = data.get('images', [])
-        if len(images) > 1:
-            raise serializers.ValidationError("You can only upload up to 1 images.")
+        # # Images 검증
+        # images = data.get('images', [])
+        # if len(images) > 1:
+        #     raise serializers.ValidationError("You can only upload up to 1 images.")
 
         return data
 
     def create(self, validated_data):
-        images = validated_data.pop('images', None)
         moods = validated_data.pop('moods', None)  # 클라이언트가 보낸 Mood 리스트
         mood_id = Mood.objects.get(name=moods)
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
-        content = genarate_ai_diary(images, moods, hashtags_data)
         ymd = validated_data.get('ymd')
+        images = DiaryImage.objects.first(ymd=ymd, username=request.user.username)[0]['image']
+        content = genarate_ai_diary(images, moods, hashtags_data)
         diary = Diary.objects.create(
             user=request.user, 
             moods=mood_id, 
@@ -278,9 +278,10 @@ class DiaryReadSerializer(serializers.ModelSerializer):
         username = request.user.username
         date = obj.ymd
         images = DiaryImage.objects.filter(ymd=obj.ymd, username=request.user.username)
-        filename = images.values('image')
+        filename = images.values('image')[0]['image']
+        preprocessed_filename = filename.split('/')[-1]
 
-        return generate_presigned_url(username, date, filename)
+        return generate_presigned_url(username, date, preprocessed_filename)
 
 
 class AiStatisticSerializer(serializers.ModelSerializer):
