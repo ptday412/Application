@@ -246,16 +246,16 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
                     hashtag, created = Hashtag.objects.get_or_create(name=name)
                     hashtags.append(hashtag)
                 instance.hashtags.set(hashtags)
-            if images:
-                instance.images.all().delete()
-                for image in images:
-                    DiaryImage.objects.create(
-                        ymd=instance.ymd, 
-                        user=request.user, 
-                        diary=instance, 
-                        image=image, 
-                        username=request.user.username
-                    )
+            # if images:
+            #     instance.images.all().delete()
+            #     for image in images:
+            #         DiaryImage.objects.create(
+            #             ymd=instance.ymd, 
+            #             user=request.user, 
+            #             diary=instance, 
+            #             image=image, 
+            #             username=request.user.username
+            #         )
 
         return instance
 
