@@ -204,7 +204,14 @@ class DiaryReadSerializer(serializers.ModelSerializer):
 class AiStatisticCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
-        fields = ['emotions_summary', 'consolation', 'recommend_activities', 'recommend_reason']
+        fields = [
+            'max_mood', 
+            'weekly_mood', 
+            'emotions_summary', 
+            'consolation', 
+            'recommend_activities', 
+            'recommend_reason',
+        ]
     
     # def validate(self, data):
     #     request = self.context['request']
