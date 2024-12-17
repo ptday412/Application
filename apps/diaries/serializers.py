@@ -332,6 +332,6 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['weekly_mood'] = weekly_mood
         validated_data['emotions_summary'] = emotions_summary
         validated_data['consolation'] = consolation
-        validated_data['recommend_activities'] = all[1][0][0]
-        validated_data['recommend_reason'] = all[1][1][0]
+        validated_data['recommend_activities'] = all[0]
+        validated_data['recommend_reason'] = all[1]
         return super().create(validated_data)
