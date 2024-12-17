@@ -319,8 +319,8 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['user'] = user  # user 필드에 request.user 저장
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
-        # all = ai_report()
-        # print('>>>>>>>>>>>>>>>>>>>ai_report', all)
+        all = ai_report()
+        print('>>>>>>>>>>>>>>>>>>>ai_report', all)
         all_emotion = report_emotion(14)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
