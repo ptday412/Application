@@ -192,6 +192,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
         images = DiaryImage.objects.first(ymd=ymd, username=request.user.username)
+        if not images:
+            raise serializers.ValidationError('분석할 사진이 저장되지 않았습니다.')
         filename1 = images.values('image')
         filename2 = list(filename1)[0]['image']
         content = genarate_ai_diary(filename2, moods, hashtags_data)
