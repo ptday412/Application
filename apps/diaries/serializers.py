@@ -320,7 +320,7 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
         # all = ai_report()
-        all_emotion = report_emotion(user)
+        all_emotion = report_emotion(14)
         print(all_emotion)
 
         # validated_data['emotions_summary'] = all[0]
