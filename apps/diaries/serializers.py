@@ -319,15 +319,15 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['user'] = user  # user 필드에 request.user 저장
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
-        all = ai_report()
-        print('>>>>>>>>>>>>>>>>>>>ai_report', all)
+        # all = ai_report()
+        # print('>>>>>>>>>>>>>>>>>>>ai_report', all)
         all_emotion = report_emotion(14)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
+        print('>>>>>>>>>>>>>>>>>>> 주간 감정을 뺀 나머지', all_emotion)
         emotion_list = [line.strip() for line in all_emotion.split('\n')]
         emotions_summary = emotion_list[0]
         consolation = emotion_list[1] + ' ' + emotion_list[2]
-        print('>>>>>>>>>>>>>>>>>>> 주간 감정을 뺀 나머지', all_emotion)
         print('>>>>>>>>>>>>>>>>>>>주간 감정', weekly_mood)
         print('>>>>>>>>>>>>>>>>>>>가장 많았던 감정 카테고리', max_mood)
         print('>>>>>>>>>>>>>>>>>>>리스트', emotion_list)
