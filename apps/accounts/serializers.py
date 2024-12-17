@@ -48,12 +48,10 @@ class OnboardingSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         interests = data.get('interests', [])
-        # interest_list = [tag.strip() for tag in interests.split(',') if tag.strip()]
         if len(interests) > 3:
             raise serializers.ValidationError("You can only add up to 3 interests.")
 
         personalities = data.get('personalities', [])
-        # personality_list = [tag.strip() for tag in personalities.split(',') if tag.strip()]
         if len(personalities) > 3:
             raise serializers.ValidationError("You can only add up to 3 personalities.")
 

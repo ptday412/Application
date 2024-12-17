@@ -77,6 +77,4 @@ def genarate_ai_diary(images, moods, hashtags):
             }
         ]
     )
-    #print(completion.choices[0].message)
-    #print(completion['choices'][0]['message']['content'])
     return completion.choices[0].message.content

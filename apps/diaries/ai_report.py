@@ -117,15 +117,9 @@ def ai_report():
     except ValueError as e:
         print(f"error occured: {e}")
     result = [data_list[0], data_list[1]] #최종 반환될 리스트
-    # for item in data_list[1:]:
-    #     transformed_item = [[item[0]], [item[1]]]
-    #     result.append(transformed_item)
     return result
 
 def report_emotion(user_id):
-    # #실제론 request에서 JWT 받음
-    # token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM0MzUyMzczLCJpYXQiOjE3MzQzNTIwNzMsImp0aSI6IjBlNzA0MmYwODBhNTRhNDBhNjgxNDJkODRhNGQwZjdjIiwidXNlcl9pZCI6MTR9.ur-BMctfNGj_fVuUxmMRzrL1tTJDXeMD1_Xd22k6HEA'
-    # user_id = get_user_from_token(token)
     #DB 연결
     try:
         connection = psycopg2.connect(
@@ -210,6 +204,4 @@ def report_emotion(user_id):
             emotion_by_day[key] = 'null'
     #인덱스0부터 순서대로 일, 월, 화, ... 요일의 감정. null이면 일기 작성하지 않은 날
     final_weekly_emotion = [emotion_by_day['Sunday'], emotion_by_day['Monday'], emotion_by_day['Tuesday'], emotion_by_day['Wednesday'], emotion_by_day['Thursday'], emotion_by_day['Friday'], emotion_by_day['Saturday']]
-    # print(final_weekly_emotion)
-    # print(emotion[max_emotion])
     return [max_emotion, emotion[max_emotion], final_weekly_emotion]
