@@ -324,7 +324,7 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         all_emotion = report_emotion(14)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
-        print('>>>>>>>>>>>>>>>>>>> 주간 감정을 뺀 나머지', all_emotion)
+        print('>>>>>>>>>>>>>>>>>>> 주간 감정을 뺀 나머지', str(all_emotion))
         emotion_list = [line.strip() for line in all_emotion.split('\n')]
         emotions_summary = emotion_list[0]
         consolation = emotion_list[1] + ' ' + emotion_list[2]
