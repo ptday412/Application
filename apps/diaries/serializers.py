@@ -205,6 +205,7 @@ class AiStatisticCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
         fields = [
+            'ymd',
             'max_mood', 
             'weekly_mood', 
             'emotions_summary', 
@@ -260,6 +261,7 @@ class AiStatisticReadSerializer(serializers.ModelSerializer):
         model = Statistics
         fields = [
             'id',
+            'ymd',
             'max_mood', 
             'weekly_mood', 
             'emotions_summary', 
