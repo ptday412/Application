@@ -7,7 +7,7 @@ from django.db import transaction
 import datetime
 import environ
 from .image_analyze import genarate_ai_diary
-from .ai_report import ai_report
+from .ai_report import ai_report, report_emotion
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -319,10 +319,12 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['user'] = user  # user 필드에 request.user 저장
         ymd = datetime.date.today()
         validated_data['ymd'] = ymd
-        all = ai_report()
+        # all = ai_report()
+        all_emotion = report_emotion(user)
+        print(all_emotion)
 
-        validated_data['consolation'] = all
-        validated_data['emotions_summary'] = all[0]
-        validated_data['recommend_activities'] = all[1][0][0]
-        validated_data['recommend_reason'] = all[1][1][0]
+        # validated_data['emotions_summary'] = all[0]
+        # validated_data['consolation'] = all
+        # validated_data['recommend_activities'] = all[1][0][0]
+        # validated_data['recommend_reason'] = all[1][1][0]
         return super().create(validated_data)
