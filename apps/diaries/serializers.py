@@ -121,10 +121,10 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        is_exists = DiaryImage.objects.filter(ymd=ymd, username=request.user.username).exists()
+        is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
         if not is_exists:
             raise serializers.ValidationError('분석할 사진이 저장되지 않았습니다.')
-        images = DiaryImage.objects.first(ymd=ymd, username=request.user.username)
+        images = DiaryImage.objects.first(ymd=str(ymd), username=request.user.username)
         filename1 = images.values('image')
         filename2 = list(filename1)[0]['image']
         content = genarate_ai_diary(filename2, moods, hashtags_data)
@@ -202,7 +202,7 @@ class DiaryReadSerializer(serializers.ModelSerializer):
         return None
 
 
-class AiStatisticSerializer(serializers.ModelSerializer):
+class AiStatisticCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
         fields = ['emotions_summary', 'consolation', 'recommend_activities', 'recommend_reason']
@@ -246,3 +246,16 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['recommend_activities'] = all[0]
         validated_data['recommend_reason'] = all[1]
         return super().create(validated_data)
+
+
+class AiStatisticReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Statistics
+        fields = [
+            'max_mood', 
+            'weekly_mood', 
+            'emotions_summary', 
+            'consolation', 
+            'recommend_activities', 
+            'recommend_reason',
+        ]
