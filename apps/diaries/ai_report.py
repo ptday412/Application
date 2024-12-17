@@ -111,16 +111,16 @@ def ai_report():
     )
     data = completion.choices[0].message.content
     print('>>>>>>>>>>>>>>>>>>>>추천활동 데이터', data)
-    # try:
-    #     data_list = ast.literal_eval(data)
-    #     print(f'type of data_list is {type(data_list)}') # output: list
-    # except ValueError as e:
-    #     print(f"error occured: {e}")
-    # result = [data_list[0]] #최종 반환될 리스트
+    try:
+        data_list = ast.literal_eval(data)
+        print(f'type of data_list is {type(data_list)}') # output: list
+    except ValueError as e:
+        print(f"error occured: {e}")
+    result = [data_list[0]] #최종 반환될 리스트
     # for item in data_list[1:]:
     #     transformed_item = [[item[0]], [item[1]]]
     #     result.append(transformed_item)
-    return data
+    return result
 
 def report_emotion(user_id):
     # #실제론 request에서 JWT 받음
