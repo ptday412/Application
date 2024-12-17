@@ -109,6 +109,7 @@ def ai_report():
         ],
     )
     data = completion.choices[0].message.content
+    print('>>>>>>>>>>>>>>>>>>>>추천활동 데이터', data)
     try:
         data_list = ast.literal_eval(data)
         print(f'type of data_list is {type(data_list)}') # output: list
