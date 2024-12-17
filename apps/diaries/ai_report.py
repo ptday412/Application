@@ -208,6 +208,6 @@ def report_emotion(user_id):
             emotion_by_day[key] = 'null'
     #인덱스0부터 순서대로 일, 월, 화, ... 요일의 감정. null이면 일기 작성하지 않은 날
     final_weekly_emotion = [emotion_by_day['Sunday'], emotion_by_day['Monday'], emotion_by_day['Tuesday'], emotion_by_day['Wednesday'], emotion_by_day['Thursday'], emotion_by_day['Friday'], emotion_by_day['Saturday']]
-    print(final_weekly_emotion)
-    print(emotion[max_emotion])
-    return (emotion[max_emotion], final_weekly_emotion)
+    # print(final_weekly_emotion)
+    # print(emotion[max_emotion])
+    return [emotion[max_emotion], final_weekly_emotion]
