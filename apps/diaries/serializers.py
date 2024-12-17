@@ -191,9 +191,10 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        images = DiaryImage.objects.filter(ymd=ymd, username=request.user.username).exists()
-        if not images:
+        is_exists = DiaryImage.objects.filter(ymd=ymd, username=request.user.username).exists()
+        if not is_exists:
             raise serializers.ValidationError('분석할 사진이 저장되지 않았습니다.')
+        images = DiaryImage.objects.first(ymd=ymd, username=request.user.username)
         filename1 = images.values('image')
         filename2 = list(filename1)[0]['image']
         content = genarate_ai_diary(filename2, moods, hashtags_data)
