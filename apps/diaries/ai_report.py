@@ -116,7 +116,7 @@ def ai_report():
         print(f'type of data_list is {type(data_list)}') # output: list
     except ValueError as e:
         print(f"error occured: {e}")
-    result = [data_list[0]] #최종 반환될 리스트
+    result = [data_list[0], data_list[1]] #최종 반환될 리스트
     # for item in data_list[1:]:
     #     transformed_item = [[item[0]], [item[1]]]
     #     result.append(transformed_item)
