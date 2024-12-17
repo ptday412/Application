@@ -202,6 +202,7 @@ class DiaryReadSerializer(serializers.ModelSerializer):
 
 
 class AiStatisticCreateSerializer(serializers.ModelSerializer):
+    ymd = serializers.SerializerMethodField()
     class Meta:
         model = Statistics
         fields = [
@@ -254,9 +255,13 @@ class AiStatisticCreateSerializer(serializers.ModelSerializer):
         validated_data['recommend_activities'] = all[0]
         validated_data['recommend_reason'] = all[1]
         return super().create(validated_data)
+    
+    def get_ymd(self, obj):
+        return obj.ymd if obj.ymd else None
 
 
 class AiStatisticReadSerializer(serializers.ModelSerializer):
+    ymd = serializers.SerializerMethodField()
     class Meta:
         model = Statistics
         fields = [
@@ -269,3 +274,6 @@ class AiStatisticReadSerializer(serializers.ModelSerializer):
             'recommend_activities', 
             'recommend_reason',
         ]
+
+    def get_ymd(self, obj):
+        return obj.ymd if obj.ymd else None
