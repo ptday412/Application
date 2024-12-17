@@ -198,9 +198,9 @@ def report_emotion(user_id):
         'Saturday': ''
     }
     # 리스트에서 요일별로 감정을 딕셔너리에 저장
-    for date, emotion, day in weekly_emotions_yoyeel:
+    for date, emotion2, day in weekly_emotions_yoyeel:
         #emotion_by_day[day].append(emotion)
-        emotion_by_day[day] = emotion
+        emotion_by_day[day] = emotion2
     #딕셔너리가 비어있다면 null 삽입
     for key in emotion_by_day:
         if not emotion_by_day[key]:
