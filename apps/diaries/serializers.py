@@ -212,6 +212,7 @@ class AiStatisticCreateSerializer(serializers.ModelSerializer):
             'recommend_activities', 
             'recommend_reason',
         ]
+        read_only = ['id']
     
     # def validate(self, data):
     #     request = self.context['request']
@@ -258,6 +259,7 @@ class AiStatisticReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
         fields = [
+            'id',
             'max_mood', 
             'weekly_mood', 
             'emotions_summary', 
