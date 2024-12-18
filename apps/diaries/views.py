@@ -30,10 +30,15 @@ class DiaryLCView(ListCreateAPIView):
         if self.request.method == "GET":
             return DiaryReadSerializer
         return DiaryWriteSerializer
-
+    
     def get_queryset(self):
         user = self.request.user
-        return Diary.objects.filter(user=user)
+        queryset = Diary.objects.filter(user=user)
+        year = self.request.query_params.get('year')  # 쿼리 파라미터로 'year' 값을 가져옴
+        month = self.request.query_params.get('month')  # 쿼리 파라미터로 'month' 값을 가져옴
+        if year and month:
+            queryset = queryset.filter(ymd__year=year, ymd__month=month)  # 특정 년/월로 필터링
+        return queryset
 
 
 class DiaryRUDView(RetrieveUpdateDestroyAPIView):
