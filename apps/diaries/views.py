@@ -65,7 +65,7 @@ def get_or_create_weekly_sentiments(request, year, month, weekstarts):
                 date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
                 print('Converted Date:', date_obj)
 
-                is_exists = Statistics.objects.filter(week_start=date_obj).exists()
+                is_exists = Statistics.objects.filter(user=request.user, week_start=date_obj).exists()
                 if not is_exists and today > date_obj:
                     serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request': request})
                     serializer.is_valid(raise_exception=True)
@@ -76,7 +76,7 @@ def get_or_create_weekly_sentiments(request, year, month, weekstarts):
             except Exception as e:
                 print(f"Error processing week_start {week_start}: {e}")
 
-    return Statistics.objects.filter(week_start__year=year, week_start__month=month)
+    return Statistics.objects.filter(user=request.user, week_start__year=year, week_start__month=month)
 
 
 class MonthlyStatisticsView(APIView):
