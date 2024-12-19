@@ -238,6 +238,7 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
         week_start = validated_data.get('week_start')
+        print('>>>>>>>>>>>>>>>>>>>>>>시리week_start: ', week_start)
         validated_data['week_start'] = week_start
         all = ai_report(user.pk, week_start)
         all_emotion = report_emotion(user.pk, week_start)
