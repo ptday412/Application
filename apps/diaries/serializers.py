@@ -232,6 +232,11 @@ class AiStatisticSerializer(serializers.ModelSerializer):
     #         if is_exists:
     #             raise serializers.ValidationError('이미 이 주의 통계가 존재합니다.')
     #     return data
+
+    def validate(self, attrs):
+        print(f"Initial Data: {self.initial_data}")  # Raw input data
+        print(f"Validated Data: {attrs}")           # Cleaned/validated data
+        return attrs
     
     def create(self, validated_data):
         # print('>>>>>>>>>>>>>>>>validated_data: ', **validated_data)
