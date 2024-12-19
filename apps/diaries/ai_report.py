@@ -49,6 +49,7 @@ def query_postgre(connection, query):
     cursor.close()
     return results
 def ai_report(user_id, base_date):
+    print('>>>>>>>>>>>>>>>>>>basedate: ', base_date)
     #DB 연결
     try:
         connection = psycopg2.connect(
