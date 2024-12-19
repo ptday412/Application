@@ -241,7 +241,7 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         week_start = self.data['week_start']
         print('>>>>>>>>>>>>>>>>>>>>>>시리week_start: ', week_start)
         validated_data['week_start'] = week_start
-        all = ai_report(user.pk, week_start)
+        # all = ai_report(user.pk, week_start)
         all_emotion = report_emotion(user.pk, week_start)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
@@ -254,8 +254,8 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['weekly_mood'] = weekly_mood
         validated_data['emotions_summary'] = emotions_summary
         validated_data['consolation'] = consolation
-        validated_data['recommend_activities'] = all[0]
-        validated_data['recommend_reason'] = all[1]
+        # validated_data['recommend_activities'] = all[0]
+        # validated_data['recommend_reason'] = all[1]
         return super().create(validated_data)
     
     def get_week_start(self, obj):
