@@ -61,16 +61,21 @@ def get_or_create_weekly_sentiments(request, year, month, weekstarts):
     today = date.today()
     for week_start in weekstarts:
         if week_start:
-            date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
-            print('>>>>>>>>>>>>>>>', date_obj)
-            is_exists = Statistics.objects.filter(week_start=date_obj).exists()
-            if not is_exists and today > date_obj:
-                serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request': request})
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-                print('>>>>>>>>>>>>>>> Saved:', serializer.data)
-            else:
-                print('>>>>>>>>>>>>>>> Validation Failed:', serializer.errors)
+            try:
+                date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
+                print('Converted Date:', date_obj)
+
+                is_exists = Statistics.objects.filter(week_start=date_obj).exists()
+                if not is_exists and today > date_obj:
+                    serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request': request})
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+                    print('>>>>>>>>>>>>>>> Saved:', serializer.data)
+                else:
+                    print('>>>>>>>>>>>>>>> Validation Failed:', serializer.errors)
+            except Exception as e:
+                print(f"Error processing week_start {week_start}: {e}")
+
     return Statistics.objects.filter(week_start__year=year, week_start__month=month)
 
 
