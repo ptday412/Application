@@ -9,6 +9,8 @@ from .serializers import (
 )
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, RetrieveAPIView
 from datetime import datetime, date
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class AiDiaryCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -55,37 +57,65 @@ class DiaryRUDView(RetrieveUpdateDestroyAPIView):
         return Diary.objects.filter(user=user)
 
 
-class AiStatisticsLCView(ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = AiStatisticSerializer
+def get_or_create_weekly_sentiments(request, year, month, weekstarts):
+    today = date.today()
+    for week_start in weekstarts:
+        if week_start:
+            date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
+            print('>>>>>>>>>>>>>>>', date_obj)
+            is_exists = Statistics.objects.filter(week_start=date_obj).exists()
+            if not is_exists and today > date_obj:
+                serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request': request})
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+    return Statistics.objects.filter(week_start__year=year, week_start__month=month)
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
+
+class MonthlyStatisticsView(APIView):
+    def get(self, request):
+        year = int(request.query_params.get('year'))
+        month = int(request.query_params.get('month'))
+        
+        # 데이터 조회 및 생성
+        weekstarts=['2024-12-01', '2024-12-08', '2024-12-15', '2024-12-22', '2024-12-29']
+        sentiments = get_or_create_weekly_sentiments(request, year, month, weekstarts)
+        
+        # 직렬화 및 응답 반환
+        serializer = AiStatisticSerializer(sentiments, many=True)
+        return Response(serializer.data)
+
+
+# class AiStatisticsLCView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = AiStatisticSerializer
+
+#     def get_serializer_context(self):
+#         context = super().get_serializer_context()
+#         context['request'] = self.request
+#         return context
     
-    def get_queryset(self):
-        year = int(self.request.query_params.get('year'))
-        month = int(self.request.query_params.get('month'))
-        user = self.request.user
-        queryset = Statistics.objects.filter(user=user)
+#     def get_queryset(self):
+#         year = int(self.request.query_params.get('year'))
+#         month = int(self.request.query_params.get('month'))
+#         user = self.request.user
+#         queryset = Statistics.objects.filter(user=user)
 
-        if year and month:
-            today = date.today()
+#         if year and month:
+#             today = date.today()
 
-            week_start_in_month = ['2024-12-01', '2024-12-08', '2024-12-15', '2024-12-22', '2024-12-29']
-            for week_start in week_start_in_month:
-                if week_start:
-                    date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
-                    print('>>>>>>>>>>>>>>>', date_obj)
-                    is_exists = Statistics.objects.filter(week_start=date_obj).exists()
-                    if not is_exists and today > date_obj:
-                        # serializer_context = {'request': self.request}
-                        serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request':self.request})
-                        serializer.is_valid(raise_exception=True)
-                        serializer.save()
-            queryset = queryset.filter(ymd__year=year, ymd__month=month)  # 특정 년/월로 필터링
-        return queryset
+#             week_start_in_month = ['2024-12-01', '2024-12-08', '2024-12-15', '2024-12-22', '2024-12-29']
+#             for week_start in week_start_in_month:
+#                 if week_start:
+#                     date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
+#                     print('>>>>>>>>>>>>>>>', date_obj)
+#                     is_exists = Statistics.objects.filter(week_start=date_obj).exists()
+#                     if not is_exists and today > date_obj:
+#                         # serializer_context = {'request': self.request}
+#                         serializer = AiStatisticSerializer(data={'week_start': week_start})
+#                         serializer.is_valid(raise_exception=True)
+#                         serializer.save()
+#             queryset = queryset.filter(ymd__year=year, ymd__month=month)  # 특정 년/월로 필터링
+#         return queryset
 
 
 class AiStatisticsDetailView(RetrieveAPIView):
