@@ -81,7 +81,7 @@ class AiStatisticsLCView(ListCreateAPIView):
                     is_exists = Statistics.objects.filter(week_start=date_obj).exists()
                     if not is_exists and today > date_obj:
                         # serializer_context = {'request': self.request}
-                        serializer = AiStatisticSerializer(data={'week_start': week_start})
+                        serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request':self.request})
                         serializer.is_valid(raise_exception=True)
                         serializer.save()
             queryset = queryset.filter(ymd__year=year, ymd__month=month)  # 특정 년/월로 필터링
