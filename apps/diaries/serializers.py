@@ -258,8 +258,8 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['recommend_reason'] = all[1]
         return super().create(validated_data)
     
-    def get_ymd(self, obj):
-        return obj.ymd if obj.ymd else None
+    def get_week_start(self, obj):
+        return obj.week_start
 
 
 # class AiStatisticReadSerializer(serializers.ModelSerializer):
