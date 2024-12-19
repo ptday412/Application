@@ -68,6 +68,9 @@ def get_or_create_weekly_sentiments(request, year, month, weekstarts):
                 serializer = AiStatisticSerializer(data={'week_start': week_start}, context={'request': request})
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
+                print('>>>>>>>>>>>>>>> Saved:', serializer.data)
+            else:
+                print('>>>>>>>>>>>>>>> Validation Failed:', serializer.errors)
     return Statistics.objects.filter(week_start__year=year, week_start__month=month)
 
 
