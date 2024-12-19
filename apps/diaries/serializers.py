@@ -215,38 +215,14 @@ class AiStatisticSerializer(serializers.ModelSerializer):
             'recommend_reason',
         ]
         read_only = ['id']
-    
-    # def validate(self, data):
-    #     request = self.context['request']
-    #     # 메서드가 POST면
-    #     if request.method == 'POST':
-    #         # 현재 날짜가 일요일인지 확인
-    #         today = datetime.date.today()
-    #         if today.weekday() != 6:  # 6: 일요일 (0: 월요일, ..., 6: 일요일)
-    #             raise serializers.ValidationError("통계는 일요일에만 생성 가능")
-            
-    #         ymd = self.validated_data['ymd']
-    #         user = self.context['request'].user
-    #         # 이미 그 주의 통계가 존재하는지
-    #         is_exists = Statistics.objects.filter(user=user, ymd=ymd).exists()
-    #         if is_exists:
-    #             raise serializers.ValidationError('이미 이 주의 통계가 존재합니다.')
-    #     return data
 
-    def validate(self, attrs):
-        print(f"Initial Data: {self.initial_data}")  # Raw input data
-        print(f"Validated Data: {attrs}")           # Cleaned/validated data
-        return attrs
-    
     def create(self, validated_data):
-        # print('>>>>>>>>>>>>>>>>validated_data: ', **validated_data)
         user = self.context['request'].user
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
         week_start = self.initial_data['week_start']
-        print('>>>>>>>>>>>>>>>>>>>>>>시리week_start: ', week_start)
         validated_data['week_start'] = week_start
-        # all = ai_report(user.pk, week_start)
+        all = ai_report(user.pk, week_start)
         all_emotion = report_emotion(user.pk, week_start)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
@@ -259,28 +235,9 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         validated_data['weekly_mood'] = weekly_mood
         validated_data['emotions_summary'] = emotions_summary
         validated_data['consolation'] = consolation
-        # validated_data['recommend_activities'] = all[0]
-        # validated_data['recommend_reason'] = all[1]
+        validated_data['recommend_activities'] = all[0]
+        validated_data['recommend_reason'] = all[1]
         return super().create(validated_data)
     
     def get_week_start(self, obj):
         return obj.week_start
-
-
-# class AiStatisticReadSerializer(serializers.ModelSerializer):
-#     ymd = serializers.SerializerMethodField()
-#     class Meta:
-#         model = Statistics
-#         fields = [
-#             'id',
-#             'ymd',
-#             'max_mood', 
-#             'weekly_mood', 
-#             'emotions_summary', 
-#             'consolation', 
-#             'recommend_activities', 
-#             'recommend_reason',
-#         ]
-
-#     def get_ymd(self, obj):
-#         return obj.ymd if obj.ymd else None
