@@ -234,7 +234,7 @@ class AiStatisticSerializer(serializers.ModelSerializer):
     #     return data
     
     def create(self, validated_data):
-        print('>>>>>>>>>>>>>>>>validated_data: ', *validated_data)
+        print('>>>>>>>>>>>>>>>>validated_data: ', **validated_data)
         user = self.context['request'].user
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
