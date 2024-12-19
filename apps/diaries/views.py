@@ -75,13 +75,15 @@ class AiStatisticsLCView(ListCreateAPIView):
 
             week_start_in_month = ['2024-12-01', '2024-12-08', '2024-12-15', '2024-12-22', '2024-12-29']
             for week_start in week_start_in_month:
-                date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
-                is_exists = Statistics.objects.filter(week_start=week_start).exists()
-                if not is_exists and today > date_obj:
-                    # serializer_context = {'request': self.request}
-                    serializer = self.get_serializer(data={'week_start': week_start})
-                    serializer.is_valid(raise_exception=True)
-                    serializer.save()
+                if week_start:
+                    date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
+                    print('>>>>>>>>>>>>>>>', date_obj)
+                    is_exists = Statistics.objects.filter(week_start=date_obj).exists()
+                    if not is_exists and today > date_obj:
+                        # serializer_context = {'request': self.request}
+                        serializer = self.get_serializer(data={'week_start': week_start})
+                        serializer.is_valid(raise_exception=True)
+                        serializer.save()
             queryset = queryset.filter(ymd__year=year, ymd__month=month)  # 특정 년/월로 필터링
         return queryset
 
