@@ -201,12 +201,12 @@ class DiaryReadSerializer(serializers.ModelSerializer):
         return None
 
 
-class AiStatisticCreateSerializer(serializers.ModelSerializer):
-    ymd = serializers.SerializerMethodField()
+class AiStatisticSerializer(serializers.ModelSerializer):
+    week_start = serializers.SerializerMethodField()
     class Meta:
         model = Statistics
         fields = [
-            'ymd',
+            'week_start',
             'max_mood', 
             'weekly_mood', 
             'emotions_summary', 
@@ -237,10 +237,10 @@ class AiStatisticCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
-        ymd = datetime.date.today()
-        validated_data['ymd'] = ymd
-        all = ai_report()
-        all_emotion = report_emotion(user.pk)
+        week_start = validated_data.get('week_start')
+        validated_data['week_start'] = week_start
+        all = ai_report(user.pk, week_start)
+        all_emotion = report_emotion(user.pk, week_start)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
         emotion_list = [line.strip() for line in all_emotion[0].split('\n')]
@@ -260,20 +260,20 @@ class AiStatisticCreateSerializer(serializers.ModelSerializer):
         return obj.ymd if obj.ymd else None
 
 
-class AiStatisticReadSerializer(serializers.ModelSerializer):
-    ymd = serializers.SerializerMethodField()
-    class Meta:
-        model = Statistics
-        fields = [
-            'id',
-            'ymd',
-            'max_mood', 
-            'weekly_mood', 
-            'emotions_summary', 
-            'consolation', 
-            'recommend_activities', 
-            'recommend_reason',
-        ]
+# class AiStatisticReadSerializer(serializers.ModelSerializer):
+#     ymd = serializers.SerializerMethodField()
+#     class Meta:
+#         model = Statistics
+#         fields = [
+#             'id',
+#             'ymd',
+#             'max_mood', 
+#             'weekly_mood', 
+#             'emotions_summary', 
+#             'consolation', 
+#             'recommend_activities', 
+#             'recommend_reason',
+#         ]
 
-    def get_ymd(self, obj):
-        return obj.ymd if obj.ymd else None
+#     def get_ymd(self, obj):
+#         return obj.ymd if obj.ymd else None

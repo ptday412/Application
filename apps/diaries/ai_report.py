@@ -48,7 +48,7 @@ def query_postgre(connection, query):
     results = cursor.fetchall()
     cursor.close()
     return results
-def ai_report():
+def ai_report(user_id, base_date):
     #DB 연결
     try:
         connection = psycopg2.connect(
@@ -61,20 +61,20 @@ def ai_report():
     except (Exception, psycopg2.Error) as error:
         print("db 연결 실패::", error)
     # 일기: 기준일로부터 7일 동안, 테스트 성공
-    query = "SELECT content FROM diaries_diary WHERE user_id = 14 AND ymd BETWEEN '2024-12-15' AND '2024-12-15'::date + INTERVAL '6 days';" #일기 쿼리 : 일주일치
+    query = f"SELECT content FROM diaries_diary WHERE user_id = {user_id} AND ymd BETWEEN '{base_date}' AND '{base_date}'::date + INTERVAL '6 days';" #일기 쿼리 : 일주일치
     diary = query_postgre(connection, query) #결과: [('내용1',), ('내용2',)] 튜플 만들어야 해서 쉼표가 있나봄
     diary_contents = [entry[0] for entry in diary]
     print(f'diary: {diary_contents}') #결과: ['내용1', '내용2']
     #키워드인데 일단 애매해서 뺌
-    #query = "SELECT h.name FROM Hashtag h JOIN DiaryHashtag dh ON h.hashtag_id = dh.hashtag_id WHERE dh.diary_id IN (SELECT diary_id FROM Diary WHERE user_id = 14);" #키워드 쿼리
+    #query = "SELECT h.name FROM Hashtag h JOIN DiaryHashtag dh ON h.hashtag_id = dh.hashtag_id WHERE dh.diary_id IN (SELECT diary_id FROM Diary WHERE user_id = {user_id});" #키워드 쿼리
     #keywords = [query_postgre(connection, query)]
     # 관심사
-    query = "SELECT i.name FROM accounts_interest i JOIN accounts_user_interests ui ON i.id = ui.interest_id WHERE ui.user_id = 14;" #관심사 쿼리
+    query = f"SELECT i.name FROM accounts_interest i JOIN accounts_user_interests ui ON i.id = ui.interest_id WHERE ui.user_id = {user_id};" #관심사 쿼리
     interest = [query_postgre(connection, query)]
     interest_contents = [i[0] for i in interest[0]] #얘는 리스트형태로 나와서 interest[0]에서 첫 인덱스
     print(f'interest: {interest_contents}')
     #성격
-    query = "SELECT p.name FROM accounts_personality p JOIN accounts_user_personalities up ON p.id = up.id WHERE up.user_id = 14;" # 성격 쿼리
+    query = f"SELECT p.name FROM accounts_personality p JOIN accounts_user_personalities up ON p.id = up.id WHERE up.user_id = {user_id};" # 성격 쿼리
     personality = [query_postgre(connection, query)]
     personality_contents = [i[0] for i in personality[0]] #얘는 리스트형태로 나와서 interest[0]에서 첫 인덱스
     print(f'personality: {personality_contents}')
@@ -118,7 +118,7 @@ def ai_report():
     result = [data_list[0], data_list[1]] #최종 반환될 리스트
     return result
 
-def report_emotion(user_id):
+def report_emotion(user_id, base_date):
     #DB 연결
     try:
         connection = psycopg2.connect(
@@ -132,7 +132,6 @@ def report_emotion(user_id):
     except (Exception, psycopg2.Error) as error:
         print("db 연결 실패::", error)
     # 일기: 기준일로부터 7일 동안, 여기선 기준일을 2024-12-15로 한다.
-    base_date = '2024-12-15'
     #mood랑 diary 조인해서 6일 간의 ymd, name, category 쿼리
     query = f"""
     SELECT d.ymd, m.name, m.category

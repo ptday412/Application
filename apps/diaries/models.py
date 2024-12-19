@@ -41,7 +41,7 @@ class Statistics(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="statistics"
     )
-    ymd = models.DateField()
+    week_start = models.DateField()
     max_mood = models.CharField(max_length=5, blank=True, null=True)
     weekly_mood = models.TextField(blank=True, null=True)
     emotions_summary = models.TextField(blank=True, null=True) # 감정 요약

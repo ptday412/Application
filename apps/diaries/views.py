@@ -1,13 +1,14 @@
+import datetime
 from rest_framework.permissions import IsAuthenticated
 from .models import Diary, Statistics
 from .serializers import (
     DiaryWriteSerializer, 
     DiaryReadSerializer, 
     AiDiaryWriteSerializer,
-    AiStatisticCreateSerializer,
-    AiStatisticReadSerializer,
+    AiStatisticSerializer,
 )
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, RetrieveAPIView
+from datetime import datetime, date
 
 class AiDiaryCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -56,25 +57,38 @@ class DiaryRUDView(RetrieveUpdateDestroyAPIView):
 
 class AiStatisticsLCView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = AiStatisticSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
     
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return AiStatisticReadSerializer
-        return AiStatisticCreateSerializer
-    
     def get_queryset(self):
+        year = int(self.request.query_params.get('year'))
+        month = int(self.request.query_params.get('month'))
         user = self.request.user
-        return Statistics.objects.filter(user=user)
+        queryset = Statistics.objects.filter(user=user)
+
+        if year and month:
+            today = date.today()
+
+            week_start_in_month = ['2024-12-01', '2024-12-08', '2024-12-15', '2024-12-22', '2024-12-29']
+            for week_start in week_start_in_month:
+                date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
+                is_exists = Statistics.objects.filter(week_start=week_start).exists()
+                if not is_exists and today > date_obj:
+                    # serializer_context = {'request': self.request}
+                    serializer = self.get_serializer(data={'week_start': week_start})
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+            queryset = queryset.filter(ymd__year=year, ymd__month=month)  # 특정 년/월로 필터링
+        return queryset
 
 
 class AiStatisticsDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = AiStatisticReadSerializer
+    serializer_class = AiStatisticSerializer
 
     def get_queryset(self):
         user = self.request.user
