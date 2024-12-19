@@ -8,7 +8,7 @@ from .serializers import (
     AiStatisticSerializer,
 )
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, RetrieveAPIView
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -63,10 +63,11 @@ def get_or_create_weekly_sentiments(request, year, month, weekstarts):
         if week_start:
             try:
                 date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
+                end_of_week = date_obj + timedelta(days=6)
                 print('Converted Date:', date_obj)
 
                 is_exists = Statistics.objects.filter(user=request.user, week_start=date_obj).exists()
-                if not is_exists and today > date_obj:
+                if not is_exists and today > date_obj and today > end_of_week:
                     serializer = AiStatisticSerializer(context={'request': request}, data={'week_start': week_start})
                     if serializer.is_valid(raise_exception=True):
                         serializer.save()
