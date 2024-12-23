@@ -230,7 +230,6 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         emotions_summary = emotion_list[0]
         consolation = emotion_list[1] + ' ' + emotion_list[2]
 
-
         validated_data['max_mood'] = max_mood
         validated_data['weekly_mood'] = weekly_mood
         validated_data['emotions_summary'] = emotions_summary
