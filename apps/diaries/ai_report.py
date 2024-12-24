@@ -90,8 +90,7 @@ def ai_report(user_id, base_date):
     worth_it = is_worth_it(user_id, base_date, diary_contents)
     if not worth_it:
         print(diary_contents)
-        return ('해당 날짜는 가입일 이전이면서, 분석할 일주일치 내용이 없어 AI피드백을 드릴 수 없습니다.')
-    raise KeyError
+        return ['분석 불가', '해당 날짜는 가입일 이전이면서, 분석할 일주일치 내용이 없어 AI피드백을 드릴 수 없습니다.']
     #키워드인데 일단 애매해서 뺌
     #query = "SELECT h.name FROM Hashtag h JOIN DiaryHashtag dh ON h.hashtag_id = dh.hashtag_id WHERE dh.diary_id IN (SELECT diary_id FROM Diary WHERE user_id = {user_id});" #키워드 쿼리
     #keywords = [query_postgre(connection, query)]
