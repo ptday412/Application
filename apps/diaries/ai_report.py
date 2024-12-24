@@ -8,6 +8,10 @@ from openai import OpenAI
 from config.settings.base import BASE_DIR
 import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+
+User = get_user_model()
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -41,6 +45,14 @@ def emotion_query_postgre(connection, query):
     cursor.close()
     return results_converted_to_list
 
+# 가입일 이전이면서 일주일치 일기 내용이 없다면, AI 피드백 받기에 가치가 없다고 판단
+def is_worth_it(user_id, base_date, diary_contents):
+    user = User.object.filter(pk=user_id)
+    date_obj = datetime.strptime(base_date, "%Y-%m-%d").date()
+    if user.date_joined < date_obj and not diary_contents:
+        return False
+    return True
+
 #일기 요약과 활동 추천
 def query_postgre(connection, query):
     cursor = connection.cursor()
@@ -48,6 +60,7 @@ def query_postgre(connection, query):
     results = cursor.fetchall()
     cursor.close()
     return results
+
 def ai_report(user_id, base_date):
     print('>>>>>>>>>>>>>>>>>>basedate: ', base_date)
     #DB 연결
@@ -66,6 +79,10 @@ def ai_report(user_id, base_date):
     diary = query_postgre(connection, query) #결과: [('내용1',), ('내용2',)] 튜플 만들어야 해서 쉼표가 있나봄
     diary_contents = [entry[0] for entry in diary]
     print(f'diary: {diary_contents}') #결과: ['내용1', '내용2']
+    # AI 피드백 받기에 가치가 없다면 막기
+    if not is_worth_it(user_id, base_date, diary_contents):
+        print(diary_contents)
+        return ('해당 날짜는 가입일 이전이면서, 분석할 일주일치 내용이 없어 AI피드백을 드릴 수 없습니다.')
     #키워드인데 일단 애매해서 뺌
     #query = "SELECT h.name FROM Hashtag h JOIN DiaryHashtag dh ON h.hashtag_id = dh.hashtag_id WHERE dh.diary_id IN (SELECT diary_id FROM Diary WHERE user_id = {user_id});" #키워드 쿼리
     #keywords = [query_postgre(connection, query)]
