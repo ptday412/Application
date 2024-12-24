@@ -1,6 +1,6 @@
 import datetime
 from rest_framework.permissions import IsAuthenticated
-from .models import Diary, Statistics
+from .models import Diary, Statistics, DiaryImage
 from .serializers import (
     DiaryWriteSerializer, 
     DiaryReadSerializer, 
@@ -11,6 +11,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from datetime import datetime, date, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 
 class AiDiaryCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -55,6 +56,17 @@ class DiaryRUDView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Diary.objects.filter(user=user)
+    
+    def perform_destroy(self, instance):
+        related_images = DiaryImage.objects.filter(username=instance.user.username, ymd=instance.ymd)
+        related_images.delete()
+        instance.delete()
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 def get_or_create_weekly_sentiments(request, year, month, weekstarts):
