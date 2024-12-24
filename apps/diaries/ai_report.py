@@ -48,9 +48,9 @@ def emotion_query_postgre(connection, query):
 # 가입일 이전이면서 일주일치 일기 내용이 없다면, AI 피드백 받기에 가치가 없다고 판단
 def is_worth_it(user_id, base_date, diary_contents):
     user = User.objects.filter(pk=user_id).values('date_joined')
+    print(dict(user))
     date_obj = datetime.strptime(base_date, "%Y-%m-%d").date()
-    print(user)
-    if user['date_joined'] < date_obj and not diary_contents:
+    if dict(user) < date_obj and not diary_contents:
         return False
     return True
 
