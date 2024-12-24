@@ -85,7 +85,8 @@ def ai_report(user_id, base_date):
     diary_contents = [entry[0] for entry in diary]
     print(f'diary: {diary_contents}') #결과: ['내용1', '내용2']
     # AI 피드백 받기에 가치가 없다면 막기
-    if not is_worth_it(user_id, base_date, diary_contents):
+    worth_it = is_worth_it(user_id, base_date, diary_contents)
+    if not worth_it:
         print(diary_contents)
         return ('해당 날짜는 가입일 이전이면서, 분석할 일주일치 내용이 없어 AI피드백을 드릴 수 없습니다.')
     #키워드인데 일단 애매해서 뺌
