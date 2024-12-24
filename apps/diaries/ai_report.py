@@ -53,8 +53,8 @@ def is_worth_it(user_id, base_date, diary_contents):
     date_obj = datetime.strptime(base_date, "%Y-%m-%d").date()
     print(diary_contents)
     print(date_joined, date_obj)
-    print(not date_joined < date_obj, bool(diary_contents))
-    if date_joined < date_obj and not diary_contents:
+    print(date_joined > date_obj, bool(diary_contents))
+    if date_joined > date_obj and bool(diary_contents):
         print('False될 예정')
         return False
     print('True될 예정')
