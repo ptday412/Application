@@ -71,6 +71,7 @@ class DiaryRUDView(RetrieveUpdateDestroyAPIView):
 
 def get_or_create_weekly_sentiments(request, year, month, weekstarts):
     today = date.today()
+
     for week_start in weekstarts:
         if week_start:
             try:
@@ -95,9 +96,11 @@ class MonthlyStatisticsView(APIView):
     def get(self, request):
         year = int(request.query_params.get('year'))
         month = int(request.query_params.get('month'))
-        
+        basedates = request.query_params.get('basedate')
+
+        weekstarts = [date.strip().strip("'") for date in basedates.split(',')]
+
         # 데이터 조회 및 생성
-        weekstarts=['2024-12-01', '2024-12-08', '2024-12-15', '2024-12-22', '2024-12-29']
         sentiments = get_or_create_weekly_sentiments(request, year, month, weekstarts)
         
         # 직렬화 및 응답 반환
