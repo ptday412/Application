@@ -51,8 +51,11 @@ def is_worth_it(user_id, base_date, diary_contents):
     dt = (list(user)[0]['date_joined'])
     date_joined = dt.date()
     date_obj = datetime.strptime(base_date, "%Y-%m-%d").date()
+    print(date_joined < date_obj, not diary_contents)
     if date_joined < date_obj and not diary_contents:
+        print('False될 예정')
         return False
+    print('True될 예정')
     return True
 
 #일기 요약과 활동 추천
