@@ -110,8 +110,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         # Hashtags 검증
         hashtags = data.get('hashtags', '')
         hashtag_list = [tag.strip() for tag in hashtags.split(',') if tag.strip()]
-        if len(hashtag_list) > 3:
-            raise serializers.ValidationError("You can only add up to 3 hashtags.")
+        if len(hashtag_list) != 3:
+            raise serializers.ValidationError("키워드의 갯수는 3개여야합니다.")
 
         return data
 
