@@ -102,7 +102,8 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
     def validate(self, data):
         request = self.context.get('request')
         try: 
-            print('>>>>>>>>>>>>>>>>>>>>>리퀘스트 프린트', request)
+            print('>>>>>>>>>>>>>>>>>>>>>리퀘스트 프린트: ', request)
+            print('>>>>>>>>>>>>>>>>>>>>>리퀘스트 데이터 프린트: ', request.data)
         except Exception as e:
             print(f"Error: {e}")
         # 1일 1다이어리 제한
