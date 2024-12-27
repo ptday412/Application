@@ -100,9 +100,13 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         fields = ['ymd', 'moods', 'hashtags']
 
     def validate(self, data):
+        request = self.context.get('request')
+        try: 
+            print('>>>>>>>>>>>>>>>>>>>>>리퀘스트 프린트', request)
+        except Exception as e:
+            print(f"Error: {e}")
         # 1일 1다이어리 제한
         ymd = data.get('ymd')
-        request = self.context.get('request')
         diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
         if diary_exists:
             raise serializers.ValidationError('하루에 하나의 일기만 쓸 수 있습니다.')
