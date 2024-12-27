@@ -4,12 +4,9 @@ from config.settings.base import BASE_DIR
 from rest_framework import serializers
 from .models import Mood, Hashtag, Diary, DiaryImage, Statistics
 from django.db import transaction
-import datetime
 import environ
 from .image_analyze import genarate_ai_diary
 from .ai_report import ai_report, report_emotion
-from rest_framework.response import Response
-from rest_framework import status
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -103,11 +100,6 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get('request')
-        try: 
-            print('>>>>>>>>>>>>>>>>>>>>>리퀘스트 프린트: ', request)
-            print('>>>>>>>>>>>>>>>>>>>>>리퀘스트 데이터 프린트: ', request.data)
-        except Exception as e:
-            print(f"Error: {e}")
         # 1일 1다이어리 제한
         ymd = data.get('ymd')
         diary_exists = Diary.objects.filter(user=request.user, ymd=ymd).exists()
@@ -128,13 +120,9 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        print(f'ymd가 문젠가?>>>>>>>>>>>>>>>>>>>>{ymd}, {type(ymd)}')
         is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
-        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>{is_exists}')
         if not is_exists:
             raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
-            print('에러 직후 프린트 되려낭?')
-        print('>>>>>>>>>>raise serializers.ValidationError 넘음')
         images = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).first()
         filename1 = images.image
         content = genarate_ai_diary(filename1, moods, hashtags_data)
