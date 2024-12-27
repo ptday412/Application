@@ -8,6 +8,8 @@ import datetime
 import environ
 from .image_analyze import genarate_ai_diary
 from .ai_report import ai_report, report_emotion
+from rest_framework.response import Response
+from rest_framework import status
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -126,13 +128,14 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        # is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
-        # if not is_exists:
-        try: 
-            images = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).first()
-        except:
-            raise serializers.ValidationError('분석할 사진이 저장되지 않았습니다.')
-
+        print(f'ymd가 문젠가?>>>>>>>>>>>>>>>>>>>>{ymd}, {type(ymd)}')
+        is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>{is_exists}')
+        if not is_exists:
+            raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
+            print('에러 직후 프린트 되려낭?')
+        print('>>>>>>>>>>raise serializers.ValidationError 넘음')
+        images = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).first()
         filename1 = images.image
         content = genarate_ai_diary(filename1, moods, hashtags_data)
         diary = Diary.objects.create(
