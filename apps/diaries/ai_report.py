@@ -45,21 +45,6 @@ def emotion_query_postgre(connection, query):
     cursor.close()
     return results_converted_to_list
 
-# 가입일 이전이면서 일주일치 일기 내용이 없다면, AI 피드백 받기에 가치가 없다고 판단
-def is_worth_it(user_id, base_date, diary_contents):
-    user = User.objects.filter(pk=user_id).values('date_joined')
-    dt = (list(user)[0]['date_joined'])
-    date_joined = dt.date()
-    date_obj = datetime.strptime(base_date, "%Y-%m-%d").date()
-    print(diary_contents)
-    print(date_joined, date_obj)
-    print(date_joined > date_obj, not bool(diary_contents))
-    if date_joined > date_obj and not bool(diary_contents):
-        print('False될 예정')
-        return False
-    print('True될 예정')
-    return True
-
 #일기 요약과 활동 추천
 def query_postgre(connection, query):
     cursor = connection.cursor()
@@ -86,11 +71,6 @@ def ai_report(user_id, base_date):
     diary = query_postgre(connection, query) #결과: [('내용1',), ('내용2',)] 튜플 만들어야 해서 쉼표가 있나봄
     diary_contents = [entry[0] for entry in diary]
     print(f'diary: {diary_contents}') #결과: ['내용1', '내용2']
-    # AI 피드백 받기에 가치가 없다면 막기
-    worth_it = is_worth_it(user_id, base_date, diary_contents)
-    if not worth_it:
-        print(diary_contents)
-        return ['분석 불가', '해당 날짜는 가입일 이전이면서, 분석할 일주일치 내용이 없어 AI피드백을 드릴 수 없습니다.']
     #키워드인데 일단 애매해서 뺌
     #query = "SELECT h.name FROM Hashtag h JOIN DiaryHashtag dh ON h.hashtag_id = dh.hashtag_id WHERE dh.diary_id IN (SELECT diary_id FROM Diary WHERE user_id = {user_id});" #키워드 쿼리
     #keywords = [query_postgre(connection, query)]
@@ -170,20 +150,20 @@ def report_emotion(user_id, base_date):
     result = emotion_query_postgre(connection, query) ##쿼리 결과
     emotion = {
     '희' : """긍정의 한주를 보낸 당신, 대단해요
-    크고 작은 기쁨들이 있으셨군요!
+    크고 작은 기쁨들이 있으셨군요!\n
     앞으로도 좋은 일들이 가득하길 바랍니다.""",
-    '노' : """부정의 한주를 보낸 당신, 괜찮아요 혹시 화나는 일이 있으셨나요?
+    '노' : """부정의 한주를 보낸 당신, 괜찮아요 혹시 화나는 일이 있으셨나요?\n
     분노를 느낄 때마다 깊게 숨을 들이마시고 내쉬며 마음을 가라앉혀 보세요.
     한결 나아질 거예요.""",
     '애' : """슬픔의 한주를 보낸 당신, 토닥토닥
-    혹시 속상한 일이 있으셨나요?
+    혹시 속상한 일이 있으셨나요?\n
     하지만 그만큼 성장하고 있다는 증거이기도 합니다.
     내일은 더 나은 날이 기다리고 있을 거예요.""",
     '락' : """즐거운 한주를 보낸 당신, 부러워요
-    이번 주에는 즐거움이 많으셨군요!
+    이번 주에는 즐거움이 많으셨군요!\n
     앞으로도 짜릿한 순간들이 계속되길 바랍니다.""",
     '섞' : """다양한 감정을 느낀 당신, 수고했어요
-    즐거움은 힘이 되고, 어려움은 성장이 되니
+    즐거움은 힘이 되고, 어려움은 성장이 되니\n
     앞으로도 당신만의 속도로 걸어가길 바라요."""
     }
     emotion_aggregator = {
