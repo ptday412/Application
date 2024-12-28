@@ -80,10 +80,9 @@ def get_or_create_weekly_sentiments(request, year, month, weekstarts):
                 print('Converted Date:', date_obj)
 
                 is_diary_exists = Diary.objects.filter(user=request.user, ymd__range=(date_obj, end_of_week)).exists()
-                print('>>>>>>>>>>>>>>>>is_diary_exists', is_diary_exists)
                 is_exists = Statistics.objects.filter(user=request.user, week_start=date_obj).exists()
+
                 if is_diary_exists and not is_exists and today > date_obj and today > end_of_week:
-                    print(f'>>>>>>>>>>>>>>{date_obj}: 조건문 안에 들어옴')
                     serializer = AiStatisticSerializer(context={'request': request}, data={'week_start': week_start})
                     if serializer.is_valid(raise_exception=True):
                         serializer.save()
