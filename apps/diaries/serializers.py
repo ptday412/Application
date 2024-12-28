@@ -227,8 +227,9 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         max_mood = all_emotion.pop(0)
         emotion_list = [line.strip() for line in all_emotion[0].split('\n')]
         emotions_summary = emotion_list[0]
-        consolation = emotion_list[1] + ' ' + emotion_list[2]
+        consolation = emotion_list[1] + '\n' + emotion_list[2]
         print('>>>>>>>>>>>>>>>>>all_emotion: ', all_emotion)
+        print('>>>>>>>>>>>>>>>>>consolation: ', consolation)
 
         validated_data['max_mood'] = max_mood
         validated_data['weekly_mood'] = weekly_mood
