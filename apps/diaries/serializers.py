@@ -202,7 +202,6 @@ class DiaryReadSerializer(serializers.ModelSerializer):
 
 class AiStatisticSerializer(serializers.ModelSerializer):
     week_start = serializers.SerializerMethodField()
-    consolation = serializers.SerializerMethodField()
 
     class Meta:
         model = Statistics
@@ -229,7 +228,7 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         max_mood = all_emotion.pop(0)
         emotion_list = [line.strip() for line in all_emotion[0].split('\n')]
         emotions_summary = emotion_list[0]
-        consolation = emotion_list[1] + '\n' + emotion_list[2]
+        consolation = emotion_list[1] + '@' + emotion_list[2]
         print('>>>>>>>>>>>>>>>>>all_emotion: ', all_emotion)
         print('>>>>>>>>>>>>>>>>>consolation: ', consolation)
 
@@ -243,6 +242,3 @@ class AiStatisticSerializer(serializers.ModelSerializer):
     
     def get_week_start(self, obj):
         return obj.week_start
-    
-    def get_consolation(self, obj):
-        return obj.consolation.replace('\n', '<br>') if obj.consolation else ''
