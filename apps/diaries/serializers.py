@@ -202,6 +202,8 @@ class DiaryReadSerializer(serializers.ModelSerializer):
 
 class AiStatisticSerializer(serializers.ModelSerializer):
     week_start = serializers.SerializerMethodField()
+    consolation = serializers.SerializerMethodField()
+
     class Meta:
         model = Statistics
         fields = [
@@ -241,3 +243,6 @@ class AiStatisticSerializer(serializers.ModelSerializer):
     
     def get_week_start(self, obj):
         return obj.week_start
+    
+    def get_consolation(self, obj):
+        return obj.consolation.replace('\n', '<br>') if obj.consolation else ''
