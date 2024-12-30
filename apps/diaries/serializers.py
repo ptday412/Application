@@ -96,7 +96,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'moods', 'hashtags']
+        fields = ['id', 'ymd', 'moods', 'hashtags']
 
     def validate(self, data):
         request = self.context.get('request')
