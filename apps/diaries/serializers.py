@@ -96,7 +96,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Diary
-        fields = ['ymd', 'moods', 'hashtags']
+        fields = ['content', 'ymd', 'moods', 'hashtags']
         read_only = ['id']
 
     def validate(self, data):
