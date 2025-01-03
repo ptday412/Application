@@ -17,12 +17,18 @@ environ.Env.read_env(
 )
 
 # 이미지 데이터를 base64로 인코딩
-def encode_image(image_data):
+def encode_image(image_data, extension):
     image = Image.open(io.BytesIO(image_data))
     buffered = io.BytesIO()
-    image.save(buffered, format="PNG")  # 이미지 형식에 따라 변경 가능
+    image.save(buffered, format=extension)  # 이미지 형식에 따라 변경 가능
     img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
     return img_str
+
+def extension_discriminator(extension_name):
+    if extension_name == 'jpg':
+        return 'JPEG'
+    elif extension_name == 'png':
+        return 'PNG'
 
 # S3에서 이미지 스트리밍 (파일 다운로드 없이)
 def get_image_from_s3(s3, bucket_name, object_key):
@@ -36,12 +42,14 @@ def genarate_ai_diary(images, moods, hashtags):
     #request에서 값 가져오기
     tmp_object_key = images #예시: https://test-kilolog.s3.ap-northeast-2.amazonaws.com/youngkyu/2024-12-15/test_image.jpg
     object_key = tmp_object_key[1:].split('.com/')[1] #tmp_object_key.split('.com')은 이런 값으로 변경됨. 이 중 키 부분인 인덱스 1의 값을 키로 사용['https://test-kilolog.s3.ap-northeast-2.amazonaws', '/youngkyu/2024-12-15/test_image.jpg']
+    extension_name = object_key.split('/')[0].split('.')[1]
+    extension = extension_discriminator(extension_name)
     emotion = moods
     tmp_keywords = hashtags #'키워드1, 키워드2, 키워드3'와 같은 꼴
     keywords = [keyword.strip() for keyword in tmp_keywords.split(',')] #[['키워드1', '키워드2', '키워드3']와 같은 꼴로 변환 #[['키워드1', '키워드2', '키워드3']와 같은 꼴로 변환 #[['키워드1', '키워드2', '키워드3']와 같은 꼴로 변환 #[['키워드1', '키워드2', '키워드3']와 같은 꼴로 변환
     #s3에서 이미지 가져오기
     image_data = get_image_from_s3(s3,bucket_name, object_key)
-    encoded_image = encode_image(image_data)
+    encoded_image = encode_image(image_data, extension)
     # 이제 인코딩된 이미지 데이터를 OpenAI API로 전송할 수 있습니다
     client = OpenAI(
         api_key=env('OPENAI_API_KEY'))
