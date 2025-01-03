@@ -29,6 +29,12 @@ def extension_discriminator(extension_name):
         return 'JPEG'
     elif extension_name == 'png':
         return 'PNG'
+    elif extension_name == 'gif':
+        return 'GIF'
+    elif extension_name == 'bmp':
+        return 'BMP'
+    elif extension_name == 'webp':
+        return 'WEBP'
 
 # S3에서 이미지 스트리밍 (파일 다운로드 없이)
 def get_image_from_s3(s3, bucket_name, object_key):
