@@ -20,7 +20,7 @@ environ.Env.read_env(
 def encode_image(image_data):
     image = Image.open(io.BytesIO(image_data))
     buffered = io.BytesIO()
-    image.save(buffered, format="JPEG")  # 이미지 형식에 따라 변경 가능
+    image.save(buffered, format="PNG")  # 이미지 형식에 따라 변경 가능
     img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
     return img_str
 
