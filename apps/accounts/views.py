@@ -18,7 +18,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
+@permission_classes([AllowAny])
 class CheckUsernameView(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
