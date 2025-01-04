@@ -22,7 +22,7 @@ User = get_user_model()
 class CheckUsernameView(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
-        username = request.data.get('username')
+        username = request.query_params.get('username')
         
         if not username:
             return Response({"error": "username을 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
