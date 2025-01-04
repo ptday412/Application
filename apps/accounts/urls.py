@@ -10,5 +10,5 @@ urlpatterns = [
     path('update-nickname/<str:username>/', views.update_nickname),
     path('token/logout/', views.logout),
     path('token/refresh/', TokenRefreshView.as_view()),
-    path('check/', views.CheckUsernameView.as_view()),
+    path('check/username/', views.CheckUsernameView.as_view()),
 ]
