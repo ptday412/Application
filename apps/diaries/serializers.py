@@ -8,6 +8,7 @@ import environ
 from .image_analyze import genarate_ai_diary
 from .ai_report import ai_report, report_emotion
 import logging
+import time
 
 logger = logging.getLogger('diaries.serializers')
 
@@ -126,6 +127,7 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         # is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
         # if not is_exists:
         #     raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
+        time.sleep(10)
         images = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).first()
         filename1 = images.image
         content = genarate_ai_diary(filename1, moods, hashtags_data)
