@@ -6,7 +6,9 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
+import logging
 
+logger = logging.getLogger('s3.serializers')
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -15,7 +17,11 @@ environ.Env.read_env(
 )
 
 # API URL
-url = env('API_URL')
+try:
+    API_URL = env('API_URL')
+except environ.ImproperlyConfigured as e:
+    logger.warning(f"Environment variable 'API_URL' is missing: {e}")
+    API_URL = 'https://default-api.example.com'
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
