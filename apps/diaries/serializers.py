@@ -7,6 +7,9 @@ from django.db import transaction
 import environ
 from .image_analyze import genarate_ai_diary
 from .ai_report import ai_report, report_emotion
+import logging
+
+logger = logging.getLogger('diaries.serializers')
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -120,9 +123,9 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
-        if not is_exists:
-            raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
+        # is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
+        # if not is_exists:
+        #     raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
         images = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).first()
         filename1 = images.image
         content = genarate_ai_diary(filename1, moods, hashtags_data)

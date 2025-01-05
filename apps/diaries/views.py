@@ -12,6 +12,10 @@ from datetime import datetime, date, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger("diaries.views")
 
 class AiDiaryCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -20,6 +24,17 @@ class AiDiaryCreateView(CreateAPIView):
     def get_queryset(self):
         user = self.request.user
         return Diary.objects.filter(user=user)
+    
+    def perform_create(self, serializer):
+        try:
+            # 객체 저장 시도
+            serializer.save()
+            logger.info("Successfully created an object.")
+        except Exception as e:
+            # 예외 발생 시 로그 기록
+            logger.error(f"Error occurred while creating an object: {str(e)}")
+            raise ValidationError({"detail": f"An error occurred: {str(e)}"})
+
 
 
 class DiaryLCView(ListCreateAPIView):
