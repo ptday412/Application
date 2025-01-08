@@ -84,27 +84,29 @@ class DiaryRUDView(RetrieveUpdateDestroyAPIView):
 
 
 
-def get_or_create_weekly_sentiments(request, year, month, weekstarts):
+def get_or_create_weekly_sentiments(request, year, month, weeks):
     today = date.today()
 
-    for week_start in weekstarts:
-        if week_start:
-            try:
-                date_obj = datetime.strptime(week_start, "%Y-%m-%d").date()
-                end_of_week = date_obj + timedelta(days=6)
-                print('Converted Date:', date_obj)
+    if weeks:
+        week_list = [days.strip() for days in weeks.split(',')]
+        for week in week_list:
+                print('>>>>>>>>>>>>>week', week)
+                try:
+                    week_start, week_end = week.split('@')
+                    start_date = datetime.strptime(week_start, "%Y-%m-%d").date()
+                    end_date = datetime.strptime(week_end, "%Y-%m-%d").date()
 
-                is_diary_exists = Diary.objects.filter(user=request.user, ymd__range=(date_obj, end_of_week)).exists()
-                is_exists = Statistics.objects.filter(user=request.user, week_start=date_obj).exists()
+                    is_diary_exists = Diary.objects.filter(user=request.user, ymd__range=(start_date, end_date)).exists()
+                    is_exists = Statistics.objects.filter(user=request.user, week_start=start_date).exists()
 
-                if is_diary_exists and not is_exists and today > date_obj and today > end_of_week:
-                    serializer = AiStatisticSerializer(context={'request': request}, data={'week_start': week_start})
-                    if serializer.is_valid(raise_exception=True):
-                        serializer.save()
-                    else:
-                        print('>>>>>>>>>>>>>>> Validation Failed:', serializer.errors)
-            except Exception as e:
-                print(f"Error processing week_start {week_start}: {e}")
+                    if is_diary_exists and not is_exists and today > start_date and today > end_date:
+                        serializer = AiStatisticSerializer(context={'request': request}, data={'week_start': week_start, 'week_end': week_end})
+                        if serializer.is_valid(raise_exception=True):
+                            serializer.save()
+                        else:
+                            print('>>>>>>>>>>>>>>> Validation Failed:', serializer.errors)
+                except Exception as e:
+                    print(f"Error processing week_start {week_start}: {e}")
 
     return Statistics.objects.filter(user=request.user, week_start__year=year, week_start__month=month)
 
@@ -115,10 +117,8 @@ class MonthlyStatisticsView(APIView):
         month = int(request.query_params.get('month'))
         basedates = request.query_params.get('basedate')
 
-        weekstarts = [date.strip().strip("'") for date in basedates.split(',')]
-
         # 데이터 조회 및 생성
-        sentiments = get_or_create_weekly_sentiments(request, year, month, weekstarts)
+        sentiments = get_or_create_weekly_sentiments(request, year, month, basedates)
         
         # 직렬화 및 응답 반환
         serializer = AiStatisticSerializer(sentiments, many=True)

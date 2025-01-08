@@ -226,9 +226,10 @@ class AiStatisticSerializer(serializers.ModelSerializer):
         # context에서 request.user 가져오기
         validated_data['user'] = user  # user 필드에 request.user 저장
         week_start = self.initial_data['week_start']
+        week_end = self.initial_data['week_end']
         validated_data['week_start'] = week_start
-        all = ai_report(user.pk, week_start)
-        all_emotion = report_emotion(user.pk, week_start)
+        all = ai_report(user.pk, week_start, week_end)
+        all_emotion = report_emotion(user.pk, week_start, week_end)
         weekly_mood = all_emotion.pop()
         max_mood = all_emotion.pop(0)
         emotion_list = [line.strip() for line in all_emotion[0].split('\n')]

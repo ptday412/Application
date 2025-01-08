@@ -53,8 +53,8 @@ def query_postgre(connection, query):
     cursor.close()
     return results
 
-def ai_report(user_id, base_date):
-    print('>>>>>>>>>>>>>>>>>>basedate: ', base_date)
+def ai_report(user_id, week_start, week_end):
+    print('>>>>>>>>>>>>>>>>>>basedate: ', week_start + '~' + week_end)
     #DB 연결
     try:
         connection = psycopg2.connect(
@@ -66,8 +66,8 @@ def ai_report(user_id, base_date):
                     )
     except (Exception, psycopg2.Error) as error:
         print("db 연결 실패::", error)
-    # 일기: 기준일로부터 7일 동안, 테스트 성공
-    query = f"SELECT content FROM diaries_diary WHERE user_id = {user_id} AND ymd BETWEEN '{base_date}' AND '{base_date}'::date + INTERVAL '6 days';" #일기 쿼리 : 일주일치
+    # 일기: 한 주 동안, 테스트 성공
+    query = f"SELECT content FROM diaries_diary WHERE user_id = {user_id} AND ymd BETWEEN '{week_start}' AND '{week_end}';" #일기 쿼리 : 1주치
     diary = query_postgre(connection, query) #결과: [('내용1',), ('내용2',)] 튜플 만들어야 해서 쉼표가 있나봄
     diary_contents = [entry[0] for entry in diary]
     print(f'diary: {diary_contents}') #결과: ['내용1', '내용2']
@@ -124,7 +124,7 @@ def ai_report(user_id, base_date):
     result = [data_list[0], data_list[1]] #최종 반환될 리스트
     return result
 
-def report_emotion(user_id, base_date):
+def report_emotion(user_id, week_start, week_end):
     #DB 연결
     try:
         connection = psycopg2.connect(
@@ -145,7 +145,7 @@ def report_emotion(user_id, base_date):
     JOIN diaries_mood m
     ON d.moods_id = m.id
     WHERE user_id={user_id}
-    AND ymd BETWEEN '{base_date}' AND '{base_date}'::date + INTERVAL '6 days';
+    AND ymd BETWEEN '{week_start}' AND '{week_end}';
     """
     result = emotion_query_postgre(connection, query) ##쿼리 결과
     emotion = {
