@@ -50,18 +50,18 @@ LOGGING = {
         "file": {
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, 'logs', 'debug.log'),
-            "level": "DEBUG",
+            "level": "WARN",
             "formatter": "verbose",
         },
     },
     "loggers": {
         "": {
-            "level": "DEBUG",
+            "level": "WARN",
             "handlers": ["file"],
         },
         "diaries.views": {
             "handlers": ["file"],
-            "level": "DEBUG",
+            "level": "WARN",
             "propagate": False,
         },
     },
