@@ -106,7 +106,7 @@ def get_or_create_weekly_sentiments(request, year, month, weeks):
                         else:
                             print('>>>>>>>>>>>>>>> Validation Failed:', serializer.errors)
                 except Exception as e:
-                    print(f"Error processing week_start {week_start}: {e}")
+                    print(f"Error processing week_start {week}: {e}")
 
     return Statistics.objects.filter(user=request.user, week_start__year=year, week_start__month=month)
 
