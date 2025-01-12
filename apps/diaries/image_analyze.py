@@ -25,7 +25,7 @@ def encode_image(image_data, extension):
     return img_str
 
 def extension_discriminator(extension_name):
-    if extension_name == 'jpg':
+    if extension_name == 'jpg' or extension_name == 'jpeg':
         return 'JPEG'
     elif extension_name == 'png':
         return 'PNG'
