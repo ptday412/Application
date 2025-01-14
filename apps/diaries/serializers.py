@@ -94,6 +94,24 @@ class DiaryWriteSerializer(serializers.ModelSerializer):
         return instance
 
 
+def wait_until_image_saved(ymd, username):
+    timeout = 10  # 최대 대기 시간 (초)
+    interval = 1  # 확인 간격 (초)
+    elapsed_time = 0  # 총 대기 시간 (초)
+
+    while elapsed_time < timeout:
+        try:
+            DiaryImage.objects.get(ymd=ymd, username=username)
+            return True
+        except DiaryImage.DoesNotExist:
+            pass
+
+        time.sleep(interval)
+        elapsed_time += interval
+
+    raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
+
+
 class AiDiaryWriteSerializer(serializers.ModelSerializer):
     moods = serializers.CharField(required=True)
     hashtags = serializers.CharField(required=True)
@@ -124,10 +142,9 @@ class AiDiaryWriteSerializer(serializers.ModelSerializer):
         hashtags_data = validated_data.pop('hashtags', None)  # 클라이언트가 보낸 hashtag 리스트
         request = self.context.get('request')
         ymd = validated_data.get('ymd')
-        # is_exists = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).exists()
-        # if not is_exists:
-        #     raise serializers.ValidationError('message : 분석할 사진이 저장되지 않았습니다.')
-        time.sleep(10)
+        
+        wait_until_image_saved(str(ymd), request.user.username)
+
         images = DiaryImage.objects.filter(ymd=str(ymd), username=request.user.username).first()
         filename1 = images.image
         content = genarate_ai_diary(filename1, moods, hashtags_data)
