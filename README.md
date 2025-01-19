@@ -3,7 +3,8 @@ You can access the live demo of the project [here](https://www.kirolog.com/)
 # Navigation
 1. [Quick Start](#quickstart)
 2. [Features](#features)
-3. [BE Team](#beteam)
+3. [ERD](#erd)
+4. [BE Team](#beteam)
 
 <a name="quickstart"></a>
 # Quick Start
@@ -109,6 +110,13 @@ python utils.py
 <br>
 </div>
 </details>
+
+<br><br><br>
+
+<a name="erd"></a>
+
+# ERD
+<img width="1000" alt="" src="docs_img/ptday412.drawio.png">
 
 <br><br><br>
 
