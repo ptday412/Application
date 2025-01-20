@@ -15,6 +15,9 @@ from rest_framework.generics import (
 )
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+import logging
+
+logger = logging.getLogger("accounts.views")
 
 User = get_user_model()
 
@@ -44,6 +47,16 @@ class IsOwner(permissions.BasePermission):
 class SignupView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = SignupSerializer
+
+    def perform_create(self, serializer):
+        try:
+            # 객체 저장 시도
+            serializer.save()
+            logger.info("Successfully created an object.")
+        except Exception as e:
+            # 예외 발생 시 로그 기록
+            logger.error(f"Error occurred while creating an object: {str(e)}")
+            raise ValidationError({"detail": f"An error occurred: {str(e)}"})
 
 
 class OnboardingView(APIView):

@@ -64,6 +64,11 @@ LOGGING = {
             "level": "WARN",
             "propagate": False,
         },
+        "accounts.views": {
+            "handlers": ["file"],
+            "level": "WARN",
+            "propagate": False,
+        },
     },
     "formatters": {
         "verbose": {
