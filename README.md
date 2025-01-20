@@ -80,11 +80,7 @@ python utils.py
 <summary>미리보기</summary>
 <div markdown="1">
     
-<img width="500" alt="" src="docs_img/pick_mood.png">
-<img width="500" alt="" src="docs_img/pick_image.png">
-<img width="500" alt="" src="docs_img/pick_keyword.png">
-<img width="500" alt="" src="docs_img/update_ai_diary.png">
-<img width="500" alt="" src="docs_img/ai_diary_end.png">
+<img width="1500" alt="" src="docs_img/ai_diary.png">
 
 <br>
 </div>
@@ -103,9 +99,7 @@ python utils.py
 <summary>미리보기</summary>
 <div markdown="1">
     
-<img width="500" alt="" src="docs_img/report_list.png">
-<img width="500" alt="" src="docs_img/pick_report_month.png">
-<img width="500" alt="" src="docs_img/report_detail.png">
+<img width="1500" alt="" src="docs_img/report.png">
 
 <br>
 </div>
