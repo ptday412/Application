@@ -1,11 +1,20 @@
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator
-from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from .models import Interest, Personality
 import random
+import re
 
 User = get_user_model()
+
+# 정규표현식
+regex = r'^(?=.*[A-Z])(?=.*[a-z])|(?=.*[A-Z])(?=.*\d)|(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*\d)|(?=.*[a-z])(?=.*[!@#$%^&*])|(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,20}$'
+
+# 검증 함수
+def validate_password(password):
+    bool(re.match(regex, password))
+    return password
+
 
 class SignupSerializer(serializers.Serializer):
     username = serializers.CharField(
@@ -16,8 +25,11 @@ class SignupSerializer(serializers.Serializer):
     password = serializers.CharField(
         write_only=True,
         required=True,
-        validators=[validate_password],
     )
+
+    # def validate(self, data):
+    #     print(data)
+    #     return validate_password(data['password'])
     
     def create(self, validated_data):
         names = ['성장마스터', '내면탐험가', '기록왕', '기록이', '끄적이', '메모쟁이', '자기분석러', '일기천재', '성장메이트', '새싹기록', '행복충전']
