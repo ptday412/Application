@@ -12,8 +12,7 @@ regex = r'^(?=.*[A-Z])(?=.*[a-z])|(?=.*[A-Z])(?=.*\d)|(?=.*[A-Z])(?=.*[!@#$%^&*]
 
 # 검증 함수
 def validate_password(password):
-    bool(re.match(regex, password))
-    return password
+    return bool(re.match(regex, password))
 
 
 class SignupSerializer(serializers.Serializer):
@@ -27,9 +26,11 @@ class SignupSerializer(serializers.Serializer):
         required=True,
     )
 
-    # def validate(self, data):
-    #     print(data)
-    #     return validate_password(data['password'])
+    def validate(self, data):
+        is_validate = validate_password(data['password'])
+        if not is_validate:
+            raise serializers.ValidationError('영문 대문자와 소문자, 숫자, 특수문자 중 2가지 이상 조합하여 6~20자로 입력해주세요.')
+        return data
     
     def create(self, validated_data):
         names = ['성장마스터', '내면탐험가', '기록왕', '기록이', '끄적이', '메모쟁이', '자기분석러', '일기천재', '성장메이트', '새싹기록', '행복충전']
