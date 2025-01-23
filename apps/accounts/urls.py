@@ -11,4 +11,6 @@ urlpatterns = [
     path('token/logout/', views.logout),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('check/username/', views.CheckUsernameView.as_view()),
+    path('kakao/login/', views.kakaoLoginLogic),
+    path('kakao/login/redirect/', views.kakaoLoginLogicRedirect),
 ]

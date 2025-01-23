@@ -23,6 +23,7 @@ environ.Env.read_env(
     env_file=os.path.join(BASE_DIR, '.env')
 )
 
+BASE_URL = "http://example.com"
 
 # Application definition
 

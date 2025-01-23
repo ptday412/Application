@@ -6,6 +6,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+BASE_URL = env('DEV_BASE_URL')
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
